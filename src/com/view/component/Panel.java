@@ -27,7 +27,7 @@ public class Panel extends JPanel {
         setVisible(visible);
 
         if (!imageName.equals("")) { //Checks that the specified object reference is not null. This method is designed primarily for doing parameter validation in methods and constructors,
-            background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/images/" + imageName))); //upload an image file
+            background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/" + imageName))); //upload an image file
         }
     }
 

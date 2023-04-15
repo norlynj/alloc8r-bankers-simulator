@@ -14,26 +14,26 @@ public class InputDecisionPanel extends Panel{
     private ImageButton musicButton;
     private ImageButton homeButton;
     public InputDecisionPanel() {
-        super("bg/menu2.gif");
+        super("bg/input-choice-panel.png");
 
 
 
-        fromATextFileButton = new ImageButton("button/from-file.png");
-        userDefinedButton = new ImageButton("button/user-defined.png");
-        randomButton = new ImageButton("button/random.png");
+        fromATextFileButton = new ImageButton("buttons/fromtext.png");
+        userDefinedButton = new ImageButton("buttons/user.png");
+        randomButton = new ImageButton("buttons/random.png");
 
-        musicButton = new ImageButton("button/music-on.png");
-        homeButton = new ImageButton("button/home.png");
+        musicButton = new ImageButton("buttons/volume-on.png");
+        homeButton = new ImageButton("buttons/home.png");
 
-        fromATextFileButton.setBounds(57, 390, 370, 63);
-        userDefinedButton.setBounds(57, 490, 373, 76);
-        randomButton.setBounds(57, 590, 373, 76);
-        musicButton.setBounds(945, 40, 47, 47);
-        homeButton.setBounds(1010, 40, 47, 47);
+        fromATextFileButton.setBounds(526, 552, 385, 61);
+        userDefinedButton.setBounds(462, 472, 449, 61);
+        randomButton.setBounds(683, 391, 229, 61);
+        musicButton.setBounds(976, 25, 47, 47);
+        homeButton.setBounds(1033, 25, 47, 47);
 
         setListeners();
 
-        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/images/bg/menu.gif")));
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/bg/input-choice-panel.png")));
 
         JLabel bgImage = new JLabel();
 
@@ -49,11 +49,11 @@ public class InputDecisionPanel extends Panel{
     }
 
     private void setListeners() {
-        fromATextFileButton.hover("button/from-file-hover.png", "button/from-file.png");
-        userDefinedButton.hover("button/user-defined-hover.png", "button/user-defined.png");
-        randomButton.hover("button/random-hover.png", "button/random.png");
-        musicButton.hover("button/music-off-hover.png", "button/music-on.png");
-        homeButton.hover("button/home-hover.png", "button/home.png");
+        fromATextFileButton.hover("buttons/fromtext-hover.png", "buttons/fromtext.png");
+        userDefinedButton.hover("buttons/user-hover.png", "buttons/user.png");
+        randomButton.hover("buttons/random-hover.png", "buttons/random.png");
+        musicButton.hover("buttons/volume-on-hover.png", "buttons/volume-on.png");
+        homeButton.hover("buttons/home-hover.png", "buttons/home.png");
     }
 
 
