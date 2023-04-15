@@ -9,13 +9,13 @@ public class HowPanel extends Panel{
     private ImageButton musicButton, homeButton, defButton, termsButton, backButton;
     public HowPanel() {
 
-        super("bg/how-it-works.png");
+        super("bg/how.png");
 
-        musicButton = new ImageButton("button/music-on.png");
-        homeButton = new ImageButton("button/home.png");
+        musicButton = new ImageButton("buttons/volume-on.png");
+        homeButton = new ImageButton("buttons/home.png");
         defButton = new ImageButton("button/definition.png");
-        termsButton = new ImageButton("button/terms.png");
-        backButton = new ImageButton("button/back.png");
+        termsButton = new ImageButton("buttons/terms.png");
+        backButton = new ImageButton("buttons/back.png");
 
         musicButton.setBounds(945, 40, 47, 47);
         homeButton.setBounds(1010, 40, 47, 47);
@@ -34,11 +34,11 @@ public class HowPanel extends Panel{
     }
 
     private void setListeners() {
-        musicButton.hover("button/music-off-hover.png", "button/music-on.png");
-        homeButton.hover("button/home-hover.png", "button/home.png");
-        defButton.hover("button/definition-hover.png", "button/definition.png");
-        termsButton.hover("button/terms-hover.png", "button/terms.png");
-        backButton.hover("button/back-hover.png", "button/back.png");
+        musicButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
+        homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+        defButton.hover("buttons/definition-hover.png", "buttons/definition.png");
+        termsButton.hover("buttons/terms-hover.png", "buttons/terms.png");
+        backButton.hover("buttons/back-hover.png", "buttons/back.png");
         listenToButtonClicks();
     }
 
@@ -58,7 +58,7 @@ public class HowPanel extends Panel{
             termsButton.setVisible(false);
         });
         backButton.addActionListener(e -> {
-            setImage("bg/how-it-works.png");
+            setImage("bg/how.png");
             defButton.setVisible(true);
             termsButton.setVisible(true);
             defButton.setBounds(187, 666, 353, 47);
