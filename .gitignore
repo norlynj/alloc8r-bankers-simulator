@@ -29,6 +29,3 @@ bin/
 .DS_Store
 /.idea/
 /allocator.iml
-alloc8r-bankers-simulator.iml
-*.iml
-alloc8r-bankers-simulator.iml
