@@ -23,13 +23,15 @@ public class InputDecisionPanel extends Panel{
         homeButton = new ImageButton("buttons/home.png");
 
 
-
         fromATextFileButton.setBounds(526, 552, 385, 61);
         userDefinedButton.setBounds(462, 472, 449, 61);
         randomButton.setBounds(683, 391, 229, 61);
         musicOnButton.setBounds(945, 40, 47, 47);
         musicOffButton.setBounds(945, 40, 47, 47);
         homeButton.setBounds(1010, 40, 47, 47);
+
+        musicOffButton.setVisible(false);
+
 
         setListeners();
 

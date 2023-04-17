@@ -19,6 +19,9 @@ public class HowPanel extends Panel{
         musicOffButton.setBounds(945, 40, 47, 47);
         homeButton.setBounds(1010, 40, 47, 47);
 
+        musicOffButton.setVisible(false);
+
+
         setListeners();
 
         this.add(musicOnButton);

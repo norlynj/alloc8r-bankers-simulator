@@ -35,7 +35,7 @@ public class MenuPanel extends Panel{
         musicOnButton.setBounds(920, 25, 47, 47);
         musicOffButton.setBounds(920, 25, 47, 47);
         aboutButton.setBounds(972, 21, 47, 47);
-        aboutPanel.setBounds(1067, 176, 320, 141);
+        aboutPanel.setBounds(684, 49, 320, 141);
         aboutPanel.setVisible(false);
 
         musicOffButton.setVisible(false);

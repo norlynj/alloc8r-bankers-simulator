@@ -11,6 +11,7 @@ public class Alloc8r {
     private HowPanel howPanel;
     private InputDecisionPanel inputDecisionPanel;
     private InputPanel inputPanel;
+    private OutputPanel outputPanel;
     private Panel contentPane;
     private CardLayout cardLayout;
     private AudioPlayer audio;
@@ -26,6 +27,7 @@ public class Alloc8r {
         howPanel = new HowPanel();
         inputDecisionPanel = new InputDecisionPanel();
         inputPanel = new InputPanel();
+        outputPanel = new OutputPanel();
 
         // setup the content pane and card layout
         contentPane = new Panel(true, "bg/menu-panel.png");
@@ -38,6 +40,7 @@ public class Alloc8r {
 
         contentPane.add(inputDecisionPanel, "inputDecisionPanel");
         contentPane.add(inputPanel, "inputPanel");
+        contentPane.add(outputPanel, "outputPanel");
 
         listenToMenu();
         listenToInput();
@@ -72,6 +75,14 @@ public class Alloc8r {
         howPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
     }
 
+    public void listenToOutput() {
+        outputPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        outputPanel.getMusicOffButton().addActionListener(e -> soundClick());
+        outputPanel.getHomeButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "menuPanel");
+        });
+    }
+
     public void listenToInput(){
         inputPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
@@ -82,7 +93,7 @@ public class Alloc8r {
         menuPanel.musicClick();
         inputDecisionPanel.musicClick();
         inputPanel.musicClick();
-//        outputPanel.musicClick();
+        outputPanel.musicClick();
         howPanel.musicClick();
         if (audio.isPlaying()) {
             audio.stop();
