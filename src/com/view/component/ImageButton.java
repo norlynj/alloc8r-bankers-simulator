@@ -35,7 +35,7 @@ public class ImageButton extends JButton {
     }
 
     public void setIcon(String imageName) {
-        setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/images/" + imageName)))); //img bg
+        setIcon(new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/" + imageName)))); //img bg
     }
 
     public void hover(String hover, String unhover) {

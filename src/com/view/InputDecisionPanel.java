@@ -8,32 +8,34 @@ import javax.swing.*;
 import java.util.Objects;
 
 public class InputDecisionPanel extends Panel{
-    private ImageButton fromATextFileButton;
-    private ImageButton userDefinedButton;
-    private ImageButton randomButton;
-    private ImageButton musicButton;
-    private ImageButton homeButton;
+    private ImageButton fromATextFileButton, userDefinedButton, randomButton;
+    private ImageButton musicOnButton, musicOffButton, homeButton;
     public InputDecisionPanel() {
-        super("bg/menu2.gif");
+        super("bg/input-choice-panel.png");
 
 
 
-        fromATextFileButton = new ImageButton("button/from-file.png");
-        userDefinedButton = new ImageButton("button/user-defined.png");
-        randomButton = new ImageButton("button/random.png");
+        fromATextFileButton = new ImageButton("buttons/fromtext.png");
+        userDefinedButton = new ImageButton("buttons/user.png");
+        randomButton = new ImageButton("buttons/random.png");
+        musicOnButton = new ImageButton("buttons/volume-on.png");
+        musicOffButton = new ImageButton("buttons/volume-off.png");
+        homeButton = new ImageButton("buttons/home.png");
 
-        musicButton = new ImageButton("button/music-on.png");
-        homeButton = new ImageButton("button/home.png");
 
-        fromATextFileButton.setBounds(57, 390, 370, 63);
-        userDefinedButton.setBounds(57, 490, 373, 76);
-        randomButton.setBounds(57, 590, 373, 76);
-        musicButton.setBounds(945, 40, 47, 47);
-        homeButton.setBounds(1010, 40, 47, 47);
+        fromATextFileButton.setBounds(526, 552, 385, 61);
+        userDefinedButton.setBounds(462, 472, 449, 61);
+        randomButton.setBounds(683, 391, 229, 61);
+        musicOnButton.setBounds(945, 25, 47, 47);
+        musicOffButton.setBounds(945, 25, 47, 47);
+        homeButton.setBounds(1010, 25, 47, 47);
+
+        musicOffButton.setVisible(false);
+
 
         setListeners();
 
-        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/images/bg/menu.gif")));
+        ImageIcon background = new ImageIcon(Objects.requireNonNull(getClass().getResource("/resources/bg/input-choice-panel.png")));
 
         JLabel bgImage = new JLabel();
 
@@ -42,18 +44,30 @@ public class InputDecisionPanel extends Panel{
         bgImage.add(fromATextFileButton);
         bgImage.add(userDefinedButton);
         bgImage.add(randomButton);
-        bgImage.add(musicButton);
+        bgImage.add(musicOnButton);
+        bgImage.add(musicOffButton);
         bgImage.add(homeButton);
 
         this.add(bgImage);
     }
 
     private void setListeners() {
-        fromATextFileButton.hover("button/from-file-hover.png", "button/from-file.png");
-        userDefinedButton.hover("button/user-defined-hover.png", "button/user-defined.png");
-        randomButton.hover("button/random-hover.png", "button/random.png");
-        musicButton.hover("button/music-off-hover.png", "button/music-on.png");
-        homeButton.hover("button/home-hover.png", "button/home.png");
+        fromATextFileButton.hover("buttons/fromtext-hover.png", "buttons/fromtext.png");
+        userDefinedButton.hover("buttons/user-hover.png", "buttons/user.png");
+        randomButton.hover("buttons/random-hover.png", "buttons/random.png");
+        musicOnButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
+        musicOffButton.hover("buttons/volume-on-hover.png", "buttons/volume-off.png");
+        homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+    }
+
+    public void musicClick() {
+        if (musicOffButton.isVisible()){
+            musicOnButton.setVisible(true);
+            musicOffButton.setVisible(false);
+        } else {
+            musicOnButton.setVisible(false);
+            musicOffButton.setVisible(true);
+        }
     }
 
 
@@ -76,8 +90,11 @@ public class InputDecisionPanel extends Panel{
         return randomButton;
     }
 
-    public ImageButton getMusicButton() {
-        return musicButton;
+    public ImageButton getMusicOnButton() {
+        return musicOnButton;
+    }
+    public ImageButton getMusicOffButton() {
+        return musicOffButton;
     }
 
     public ImageButton getHomeButton() {

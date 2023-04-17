@@ -1,5 +1,5 @@
 package view;
-
+import view.component.AudioPlayer;
 import view.component.Frame;
 import view.component.Panel;
 
@@ -11,22 +11,26 @@ public class Alloc8r {
     private HowPanel howPanel;
     private InputDecisionPanel inputDecisionPanel;
     private InputPanel inputPanel;
-    private MainPanel mainPanel;
+    private OutputPanel outputPanel;
     private Panel contentPane;
     private CardLayout cardLayout;
+    private AudioPlayer audio;
 
     public Alloc8r(){
+        audio = new AudioPlayer("bgmusic.wav");
+        audio.play();
+        audio.loop();
         frame = new Frame("Alloc8r");
 
         // create Panels
         menuPanel = new MenuPanel();
         howPanel = new HowPanel();
-        mainPanel = new MainPanel();
         inputDecisionPanel = new InputDecisionPanel();
         inputPanel = new InputPanel();
+        outputPanel = new OutputPanel();
 
         // setup the content pane and card layout
-        contentPane = new Panel(true, "bg/menu.png");
+        contentPane = new Panel(true, "bg/menu-panel.png");
         cardLayout = new CardLayout();
         contentPane.setLayout(cardLayout);
 
@@ -34,9 +38,9 @@ public class Alloc8r {
         contentPane.add(menuPanel, "menuPanel");
         contentPane.add(howPanel, "howPanel");
 
-        contentPane.add(mainPanel, "mainPanel");
         contentPane.add(inputDecisionPanel, "inputDecisionPanel");
         contentPane.add(inputPanel, "inputPanel");
+        contentPane.add(outputPanel, "outputPanel");
 
         listenToMenu();
         listenToInput();
@@ -49,27 +53,53 @@ public class Alloc8r {
     }
 
     public void listenToMenu() {
-        menuPanel.getGetStartedButton().addActionListener(e -> cardLayout.show(contentPane, "inputDecisionPanel" ));
+        menuPanel.getStartButton().addActionListener(e -> cardLayout.show(contentPane, "inputDecisionPanel" ));
         menuPanel.getHowItWorksButton().addActionListener(e -> cardLayout.show(contentPane, "howPanel" ));
         menuPanel.getExitButton().addActionListener(e -> System.exit(0));
+        menuPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        menuPanel.getMusicOffButton().addActionListener(e -> soundClick());
     }
 
     public void listenToInputDecision(){
         inputDecisionPanel.getFromATextFileButton();
         inputDecisionPanel.getUserDefinedButton().addActionListener(e -> cardLayout.show(contentPane, "inputPanel" ));
         inputDecisionPanel.getRandomButton();
-        inputDecisionPanel.getMusicButton();
+        inputDecisionPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        inputDecisionPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
     }
 
     public void listenToHow(){
-        howPanel.getMusicButton();
+        howPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        howPanel.getMusicOffButton().addActionListener(e -> soundClick());
         howPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
     }
 
+    public void listenToOutput() {
+        outputPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        outputPanel.getMusicOffButton().addActionListener(e -> soundClick());
+        outputPanel.getHomeButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "menuPanel");
+        });
+    }
+
     public void listenToInput(){
-        inputPanel.getMusicButton();
+        inputPanel.getMusicOnButton().addActionListener(e -> soundClick());
+        inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
+    }
+
+    public void soundClick() {
+        menuPanel.musicClick();
+        inputDecisionPanel.musicClick();
+        inputPanel.musicClick();
+        outputPanel.musicClick();
+        howPanel.musicClick();
+        if (audio.isPlaying()) {
+            audio.stop();
+        } else {
+            audio.play();
+        }
     }
 
 }
