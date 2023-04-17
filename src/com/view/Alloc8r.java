@@ -49,7 +49,7 @@ public class Alloc8r {
     }
 
     public void listenToMenu() {
-        menuPanel.getGetStartedButton().addActionListener(e -> cardLayout.show(contentPane, "inputDecisionPanel" ));
+        menuPanel.getStartButton().addActionListener(e -> cardLayout.show(contentPane, "inputDecisionPanel" ));
         menuPanel.getHowItWorksButton().addActionListener(e -> cardLayout.show(contentPane, "howPanel" ));
         menuPanel.getExitButton().addActionListener(e -> System.exit(0));
     }
