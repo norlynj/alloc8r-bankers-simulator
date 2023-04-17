@@ -8,10 +8,10 @@ public class OutputPanel extends Panel{
     private ImageButton musicButton;
     private ImageButton homeButton;
     public OutputPanel() {
-        super("bg/output-panel-bg.png");
+        super("bg/input-panel.png");
 
-        musicButton = new ImageButton("button/music-on.png");
-        homeButton = new ImageButton("button/home.png");
+        musicButton = new ImageButton("buttons/volume-on.png");
+        homeButton = new ImageButton("buttons/home.png");
 
         musicButton.setBounds(945, 40, 47, 47);
         homeButton.setBounds(1010, 40, 47, 47);
@@ -23,8 +23,8 @@ public class OutputPanel extends Panel{
     }
 
     private void setListeners() {
-        musicButton.hover("button/music-off-hover.png", "button/music-on.png");
-        homeButton.hover("button/home-hover.png", "button/home.png");
+        musicButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
+        homeButton.hover("buttons/home-hover.png", "buttons/home.png");
     }
 
     public static void main(String[] args) {

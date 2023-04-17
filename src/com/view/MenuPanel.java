@@ -11,12 +11,10 @@ import java.util.Objects;
 
 public class MenuPanel extends Panel{
 
-
-    private Panel menu;
+    private ImageButton musicOnButton, musicOffButton;
     private ImageButton startButton;
     private ImageButton howItWorksButton;
     private ImageButton exitButton;
-    private ImageButton musicOnButton, musicOffButton;
     private ImageButton aboutButton;
     private Panel aboutPanel;
 
@@ -29,7 +27,7 @@ public class MenuPanel extends Panel{
         musicOnButton = new ImageButton("buttons/volume-on.png");
         musicOffButton = new ImageButton("buttons/volume-off.png");
         aboutButton = new ImageButton("buttons/about.png");
-        aboutPanel = new Panel("bg/about-hover-panel.png");
+        aboutPanel = new Panel("bg/about-hover-label.png");
 
         startButton.setBounds(380, 572, 152, 61);
         howItWorksButton.setBounds(1023, 21, 47, 47);
@@ -80,10 +78,6 @@ public class MenuPanel extends Panel{
         frame.setVisible(true);
     }
 
-    public Panel getMenu() {
-        return menu;
-    }
-
     public ImageButton getStartButton() {
         return startButton;
     }
@@ -96,7 +90,20 @@ public class MenuPanel extends Panel{
         return exitButton;
     }
 
-    public ImageButton getAboutButton() {
-        return aboutButton;
+    public void musicClick() {
+        if (musicOffButton.isVisible()){
+            musicOnButton.setVisible(true);
+            musicOffButton.setVisible(false);
+        } else {
+            musicOnButton.setVisible(false);
+            musicOffButton.setVisible(true);
+        }
+    }
+
+    public ImageButton getMusicOnButton() {
+        return musicOnButton;
+    }
+    public ImageButton getMusicOffButton() {
+        return musicOffButton;
     }
 }
