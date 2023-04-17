@@ -26,9 +26,9 @@ public class InputPanel extends Panel {
         musicOffButton = new ImageButton("buttons/volume-off.png");
         homeButton = new ImageButton("buttons/home.png");
 
-        musicOnButton.setBounds(945, 40, 47, 47);
-        musicOffButton.setBounds(945, 40, 47, 47);
-        homeButton.setBounds(1010, 40, 47, 47);
+        musicOnButton.setBounds(945, 25, 47, 47);
+        musicOffButton.setBounds(945, 25, 47, 47);
+        homeButton.setBounds(1010, 25, 47, 47);
 
         musicOffButton.setVisible(false);
 

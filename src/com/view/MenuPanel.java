@@ -30,11 +30,11 @@ public class MenuPanel extends Panel{
         aboutPanel = new Panel("bg/about-hover-label.png");
 
         startButton.setBounds(380, 572, 152, 61);
-        howItWorksButton.setBounds(1023, 21, 47, 47);
+        howItWorksButton.setBounds(1023, 25, 47, 47);
         exitButton.setBounds(572, 572, 152, 61);
         musicOnButton.setBounds(920, 25, 47, 47);
         musicOffButton.setBounds(920, 25, 47, 47);
-        aboutButton.setBounds(972, 21, 47, 47);
+        aboutButton.setBounds(972, 25, 47, 47);
         aboutPanel.setBounds(684, 49, 320, 141);
         aboutPanel.setVisible(false);
 
