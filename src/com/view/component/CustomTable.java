@@ -22,6 +22,8 @@ public class CustomTable extends JTable {
         tableHeader.setFont(HEADER_FONT);
         tableHeader.setBackground(HEADER_BACKGROUND_COLOR);
 
+        setCellSelectionEnabled(false); // disable selection
+
         //Set text to center
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
