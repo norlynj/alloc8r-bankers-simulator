@@ -7,14 +7,17 @@ import view.component.CustomTable;
 import view.component.ProcessTableModel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.Objects;
 
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton pNPlus, pNMinus, aRNPlus, aRNMinus, runButton;
     private ImageButton resetButton, removeButton;
-    private JTextField processNumField, availableReourcesNumField;
+    private JTextField processNumField, availableResourcesNumField;
     private ProcessTableModel processTableModel;
     private DefaultTableModel allocationTableModel, maxTableModel, availableTableModel, requestResourceTableModel;
     private CustomTable processTable, allocationTable, maxTable, availableTable, requestResourceTable;
@@ -51,15 +54,15 @@ public class InputPanel extends Panel {
         pNPlus.setBounds(284, 217, 44, 44);
 
 
-        availableReourcesNumField = new JTextField("3", 2);
-        availableReourcesNumField.setName("processNumField");
-        availableReourcesNumField.setBorder(null);
-        availableReourcesNumField.setHorizontalAlignment(SwingConstants.CENTER);
-        availableReourcesNumField.setFont(new Font("Montserrat", Font.BOLD, 20));
+        availableResourcesNumField = new JTextField("3", 2);
+        availableResourcesNumField.setName("availableResourcesNumField");
+        availableResourcesNumField.setBorder(null);
+        availableResourcesNumField.setHorizontalAlignment(SwingConstants.CENTER);
+        availableResourcesNumField.setFont(new Font("Montserrat", Font.BOLD, 20));
 
         aRNPlus = new ImageButton("buttons/add.png");
         aRNMinus = new ImageButton("buttons/minus.png");
-        availableReourcesNumField.setBounds(468, 217, 139, 44);
+        availableResourcesNumField.setBounds(468, 217, 139, 44);
         aRNMinus.setBounds(424, 217, 44, 44);
         aRNPlus.setBounds(608, 217, 44, 44);
 
@@ -69,23 +72,23 @@ public class InputPanel extends Panel {
 
         // Table
         // Create the table model and table
-        ProcessTableModel processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
-        DefaultTableModel allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        DefaultTableModel maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        DefaultTableModel availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
-        DefaultTableModel requestResourceTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+        processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
+        allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+        requestResourceTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
 
-        CustomTable processTable = new CustomTable(processTableModel);
-        CustomTable allocationTable = new CustomTable(allocationTableModel);
-        CustomTable maxTable = new CustomTable(maxTableModel);
-        CustomTable availableTable = new CustomTable(availableTableModel);
-        CustomTable requestResourceTable = new CustomTable(requestResourceTableModel);
+        processTable = new CustomTable(processTableModel);
+        allocationTable = new CustomTable(allocationTableModel);
+        maxTable = new CustomTable(maxTableModel);
+        availableTable = new CustomTable(availableTableModel);
+        requestResourceTable = new CustomTable(requestResourceTableModel);
 
-        JScrollPane processTablePane = processTable.createTablePane(71, 367, 166, 227);
-        JScrollPane allocationTablePane = allocationTable.createTablePane(239, 367, 266, 227);
-        JScrollPane maxTablePane = maxTable.createTablePane(507, 367, 266, 227);
-        JScrollPane availableTablePane = availableTable.createTablePane(775, 367, 266, 227);
-        JScrollPane requestResourceTablePane = requestResourceTable.createTablePane(100, 684, 293, 65);
+        processTablePane = processTable.createTablePane(71, 367, 166, 227);
+        allocationTablePane = allocationTable.createTablePane(239, 367, 266, 227);
+        maxTablePane = maxTable.createTablePane(507, 367, 266, 227);
+        availableTablePane = availableTable.createTablePane(775, 367, 266, 227);
+        requestResourceTablePane = requestResourceTable.createTablePane(100, 684, 293, 65);
 
 
         // Reset and Remove buttons
@@ -102,7 +105,7 @@ public class InputPanel extends Panel {
         this.add(aRNMinus);
         this.add(aRNPlus);
         this.add(processNumField);
-        this.add(availableReourcesNumField);
+        this.add(availableResourcesNumField);
         this.add(musicOnButton);
         this.add(musicOffButton);
         this.add(homeButton);
@@ -128,6 +131,66 @@ public class InputPanel extends Panel {
         resetButton.hover("buttons/reset-hover.png", "buttons/reset.png");
         removeButton.hover("buttons/remove-hover.png", "buttons/remove.png");
         runButton.hover("buttons/run-hover.png", "buttons/run.png");
+
+        pNMinus.addActionListener(e -> processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) - 1)));
+        pNPlus.addActionListener(e -> processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) + 1)));
+        aRNMinus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) - 1)));
+        aRNPlus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) + 1)));
+
+        listenToUserInput();
+    }
+
+    private void listenToUserInput() {
+        inputValidator(processNumField, 3, 10);
+        inputValidator(availableResourcesNumField, 3, 30);
+    }
+
+    private void inputValidator(JTextField input, int minimum, int maximum) {
+        input.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            private void validateInput() {
+                try {
+                    String text = input.getText();
+                    int value = Integer.parseInt(text);
+                    if (value < minimum || value > maximum) {
+                        // If the value is out of range, highlight the text field
+                        input.setBackground(new Color(255, 202, 202));
+                        runButton.setEnabled(false);
+                    } else {
+                        // Otherwise, clear the highlighting
+                        input.setBackground(UIManager.getColor("TextField.background"));
+                        if (input.getName().equals("processNumField")) {
+                            processTableModel.setNumRows(value);
+                            allocationTableModel.setNumRows(value);
+                            maxTableModel.setNumRows(value);
+                        } else {
+                            allocationTableModel.setColumnCount(value);
+                            maxTableModel.setColumnCount(value);
+                            availableTableModel.setColumnCount(value);
+                            requestResourceTableModel.setColumnCount(value);
+                        }
+                        runButton.setEnabled(true);
+                    }
+                } catch (NumberFormatException ex) {
+                    // If the input cannot be parsed as an integer, highlight the text field
+                    input.setBackground(new Color(255, 202, 202));
+                }
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -136,6 +199,7 @@ public class InputPanel extends Panel {
         frame.add(m);
         frame.setVisible(true);
     }
+
 
     public void musicClick() {
         if (musicOffButton.isVisible()){
