@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.Objects;
 
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
@@ -89,6 +90,7 @@ public class InputPanel extends Panel {
         availableTablePane = availableTable.createTablePane(775, 367, 266, 227);
         requestResourceTablePane = requestResourceTable.createTablePane(100, 684, 293, 65);
 
+        runButton.setEnabled(false); // should have inputs first
 
         // Reset and Remove buttons
         resetButton = new ImageButton("buttons/reset.png");
@@ -152,6 +154,11 @@ public class InputPanel extends Panel {
     private void listenToUserInput() {
         inputValidator(processNumField, 3, 30);
         inputValidator(availableResourcesNumField, 3, 10);
+        allocationTableModel.addTableModelListener(e -> updateRunButton());
+        maxTableModel.addTableModelListener(e -> updateRunButton());
+        availableTableModel.addTableModelListener(e -> updateRunButton());
+        requestResourceTableModel.addTableModelListener(e -> updateRunButton());
+
     }
 
     private void inputValidator(JTextField input, int minimum, int maximum) {
@@ -192,14 +199,42 @@ public class InputPanel extends Panel {
                             availableTableModel.setColumnCount(value);
                             requestResourceTableModel.setColumnCount(value);
                         }
-                        runButton.setEnabled(true);
-                    }
+                        if (validTable()){
+                            runButton.setEnabled(true);
+                        }                    }
                 } catch (NumberFormatException ex) {
                     // If the input cannot be parsed as an integer, highlight the text field
                     input.setBackground(new Color(255, 202, 202));
                 }
             }
         });
+    }
+
+    private void updateRunButton() {
+        if (validTable()) {
+            runButton.setEnabled(true);
+        } else{
+            runButton.setEnabled(false);
+        }
+    }
+
+    private boolean validTable() {
+
+        for (int row = 0; row < processTable.getRowCount(); row++) {
+            for (int col = 0; col < processTable.getColumnCount(); col++) {
+                if (allocationTable.getValueAt(row, col) == null || allocationTable.toString().trim().isEmpty() || maxTable.getValueAt(row, col) == null || maxTable.toString().trim().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        for (int row = 0; row < availableTable.getRowCount(); row++) {
+            for (int col = 0; col < availableTable.getColumnCount(); col++) {
+                if (availableTable.getValueAt(row, col) == null || availableTable.toString().trim().isEmpty() || requestResourceTable.getValueAt(row, col) == null || requestResourceTable.toString().trim().isEmpty()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static void main(String[] args) {
