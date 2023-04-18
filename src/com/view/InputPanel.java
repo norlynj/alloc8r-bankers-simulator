@@ -1,24 +1,29 @@
 package view;
 
-import model.CustomTableModel;
+import model.ProcessTableModel;
 import view.component.Frame;
 import view.component.ImageButton;
-import view.component.Label;
 import view.component.Panel;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
 
 public class InputPanel extends Panel {
+    private static final int FONT_SIZE = 18;
+    private static final Font HEADER_FONT = new Font("Montserrat", Font.BOLD, 18);
+    private static final Color HEADER_BACKGROUND_COLOR = new Color(210, 237, 232);
+    private static final Color TABLE_PANE_COLOR = new Color(118, 138, 150);
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton pNPlus, pNMinus, aRNPlus, aRNMinus, runButton;
     private ImageButton resetButton, removeButton;
     private JTextField processNumField, availableReourcesNumField;
+    private ProcessTableModel processTableModel;
+    private DefaultTableModel allocationTableModel, maxTableModel, availableTableModel, requestResourceTableModel;
+    private JTable processTable, allocationTable, maxTable, availableTable, requestResourceTable;
+    private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, requestResourceTablePane;
 
 
 
@@ -68,8 +73,89 @@ public class InputPanel extends Panel {
 
 
         // Table
+        // Create the table model and table
+        ProcessTableModel processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
+        DefaultTableModel allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        DefaultTableModel maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        DefaultTableModel availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+        DefaultTableModel requestResourceTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+
+        JTable processTable = new JTable(processTableModel);
+        JTable allocationTable = new JTable(allocationTableModel);
+        JTable maxTable = new JTable(maxTableModel);
+        JTable availableTable = new JTable(availableTableModel);
+        JTable requestResourceTable = new JTable(requestResourceTableModel);
+
+        processTable.setRowHeight(30);
+        allocationTable.setRowHeight(30);
+        maxTable.setRowHeight(30);
+        availableTable.setRowHeight(30);
+        requestResourceTable.setRowHeight(30);
 
 
+        processTable.setFont(new Font("Montserrat", Font.PLAIN, FONT_SIZE));
+        allocationTable.setFont(new Font("Montserrat", Font.PLAIN, FONT_SIZE));
+        maxTable.setFont(new Font("Montserrat", Font.PLAIN, FONT_SIZE));
+        availableTable.setFont(new Font("Montserrat", Font.PLAIN, FONT_SIZE));
+        requestResourceTable.setFont(new Font("Montserrat", Font.PLAIN, FONT_SIZE));
+
+        // Create the scroll pane for the table
+        JScrollPane processTablePane = new JScrollPane(processTable);
+        JScrollPane allocationTablePane = new JScrollPane(allocationTable);
+        JScrollPane maxTablePane = new JScrollPane(maxTable);
+        JScrollPane availableTablePane = new JScrollPane(availableTable);
+        JScrollPane requestResourceTablePane = new JScrollPane(requestResourceTable);
+
+        processTablePane.setBounds(71, 367, 166, 227);
+        allocationTablePane.setBounds(239, 367, 266, 227);
+        maxTablePane.setBounds(507, 367, 266, 227);
+        availableTablePane.setBounds(775, 367, 266, 227);
+        requestResourceTablePane.setBounds(100, 684, 293, 65);
+
+
+        processTablePane.setBorder(BorderFactory.createEmptyBorder());
+        allocationTablePane.setBorder(BorderFactory.createEmptyBorder());
+        maxTablePane.setBorder(BorderFactory.createEmptyBorder());
+        availableTablePane.setBorder(BorderFactory.createEmptyBorder());
+        requestResourceTablePane.setBorder(BorderFactory.createEmptyBorder());
+
+        processTablePane.getViewport().setBackground(TABLE_PANE_COLOR);
+        allocationTablePane.getViewport().setBackground(TABLE_PANE_COLOR);
+        maxTablePane.getViewport().setBackground(TABLE_PANE_COLOR);
+        availableTablePane.getViewport().setBackground(TABLE_PANE_COLOR);
+        requestResourceTablePane.getViewport().setBackground(TABLE_PANE_COLOR);
+
+        // Set the cell renderer to center-align the cell contents
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int i = 0; i < processTable.getColumnModel().getColumnCount(); i++) {
+            processTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            allocationTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            maxTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            availableTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            requestResourceTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        // Set the font and background color of the table header
+        JTableHeader processTableHeader = processTable.getTableHeader();
+        processTableHeader.setFont(HEADER_FONT);
+        processTableHeader.setBackground(HEADER_BACKGROUND_COLOR);
+
+        JTableHeader allocationTableHeader = allocationTable.getTableHeader();
+        allocationTableHeader.setFont(HEADER_FONT);
+        allocationTableHeader.setBackground(HEADER_BACKGROUND_COLOR);
+
+        JTableHeader maxTableHeader = maxTable.getTableHeader();
+        maxTableHeader.setFont(HEADER_FONT);
+        maxTableHeader.setBackground(HEADER_BACKGROUND_COLOR);
+
+        JTableHeader availableResourcesHeader = availableTable.getTableHeader();
+        availableResourcesHeader.setFont(HEADER_FONT);
+        availableResourcesHeader.setBackground(HEADER_BACKGROUND_COLOR);
+
+        JTableHeader requestResourceHeader = requestResourceTable.getTableHeader();
+        requestResourceHeader.setFont(HEADER_FONT);
+        requestResourceHeader.setBackground(HEADER_BACKGROUND_COLOR);
 
         // Reset and Remove buttons
         resetButton = new ImageButton("buttons/reset.png");
@@ -89,6 +175,11 @@ public class InputPanel extends Panel {
         this.add(musicOnButton);
         this.add(musicOffButton);
         this.add(homeButton);
+        this.add(processTablePane);
+        this.add(allocationTablePane);
+        this.add(maxTablePane);
+        this.add(availableTablePane);
+        this.add(requestResourceTablePane);
         this.add(resetButton);
         this.add(removeButton);
         this.add(runButton);
