@@ -137,6 +137,16 @@ public class InputPanel extends Panel {
         aRNMinus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) - 1)));
         aRNPlus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) + 1)));
 
+        removeButton.addActionListener(e -> {
+            int row = processTable.getSelectedRow();
+            if (row > -1 && processTable.getRowCount() > 3) {
+                processTableModel.removeRow(row);
+                allocationTableModel.removeRow(row);
+                maxTableModel.removeRow(row);
+                processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) - 1));
+            }
+        });
+        
         listenToUserInput();
     }
 
@@ -171,7 +181,7 @@ public class InputPanel extends Panel {
                         input.setBackground(new Color(255, 202, 202));
                         runButton.setEnabled(false);
                     } else {
-                        // Otherwise, clear the highlighting
+                        // Otherwise, clear the highlighting and add or remove columns/rows
                         input.setBackground(UIManager.getColor("TextField.background"));
                         if (input.getName().equals("processNumField")) {
                             processTableModel.setNumRows(value);
