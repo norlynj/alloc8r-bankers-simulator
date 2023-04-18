@@ -130,6 +130,9 @@ public class InputPanel extends Panel {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         for (int i = 0; i < processTable.getColumnModel().getColumnCount(); i++) {
             processTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        for (int i = 0; i < allocationTable.getColumnModel().getColumnCount(); i++) {
             allocationTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             maxTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             availableTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
