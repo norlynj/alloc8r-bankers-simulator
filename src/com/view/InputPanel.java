@@ -17,6 +17,7 @@ import java.awt.*;
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton pNPlus, pNMinus, aRNPlus, aRNMinus, runButton;
+    private ImageButton resetButton, removeButton;
     private JTextField processNumField, availableReourcesNumField;
 
 
@@ -67,6 +68,16 @@ public class InputPanel extends Panel {
 
 
         // Table
+
+
+
+        // Reset and Remove buttons
+        resetButton = new ImageButton("buttons/reset.png");
+        removeButton = new ImageButton("buttons/remove.png");
+        resetButton.setBounds(846, 657, 94, 42);
+        removeButton.setBounds(963, 657, 94, 42);
+
+
         setListeners();
 
         this.add(pNMinus);
@@ -78,6 +89,8 @@ public class InputPanel extends Panel {
         this.add(musicOnButton);
         this.add(musicOffButton);
         this.add(homeButton);
+        this.add(resetButton);
+        this.add(removeButton);
         this.add(runButton);
 
     }
@@ -90,6 +103,8 @@ public class InputPanel extends Panel {
         musicOnButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
         musicOffButton.hover("buttons/volume-on-hover.png", "buttons/volume-off.png");
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+        resetButton.hover("buttons/reset-hover.png", "buttons/reset.png");
+        removeButton.hover("buttons/remove-hover.png", "buttons/remove.png");
         runButton.hover("buttons/run-hover.png", "buttons/run.png");
     }
 
