@@ -141,8 +141,8 @@ public class InputPanel extends Panel {
     }
 
     private void listenToUserInput() {
-        inputValidator(processNumField, 3, 10);
-        inputValidator(availableResourcesNumField, 3, 30);
+        inputValidator(processNumField, 3, 30);
+        inputValidator(availableResourcesNumField, 3, 10);
     }
 
     private void inputValidator(JTextField input, int minimum, int maximum) {
