@@ -1,8 +1,13 @@
 package view;
 
 import view.component.*;
+import view.component.Frame;
+import view.component.Label;
+import view.component.Panel;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class OutputPanel extends Panel{
     private ImageButton musicOnButton, musicOffButton, homeButton;
@@ -52,10 +57,8 @@ public class OutputPanel extends Panel{
         availableTablePane = availableTable.createTablePane(884, 171, 185, 235);
 
         // Labels
-        stepsLabel = new Label(("For i = 0\n" +
-                "Need0 = 7, 4, 3\n" +
-                "Finish[0] is false and Need > Work\n" +
-                "So P0 must wait"), true, SwingConstants.CENTER);
+        stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepsLabel.setForeground(Color.white);
         requestResourceLabel = new Label("1, 2, 3");
         safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
 

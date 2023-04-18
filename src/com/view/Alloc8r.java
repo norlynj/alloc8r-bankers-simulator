@@ -4,6 +4,7 @@ import view.component.Frame;
 import view.component.Panel;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Alloc8r {
     private Frame frame;
@@ -87,6 +88,9 @@ public class Alloc8r {
         inputPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
+        inputPanel.getRunButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "outputPanel");
+        });
     }
 
     public void soundClick() {

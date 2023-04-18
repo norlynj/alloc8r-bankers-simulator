@@ -25,6 +25,7 @@ public class InputPanel extends Panel {
 
 
 
+
     public InputPanel() {
 
         super("bg/input-panel.png");
@@ -229,6 +230,10 @@ public class InputPanel extends Panel {
     }
     public ImageButton getHomeButton() {
         return homeButton;
+    }
+
+    public ImageButton getRunButton() {
+        return runButton;
     }
 }
 
