@@ -6,8 +6,9 @@ import view.component.Panel;
 
 public class OutputPanel extends Panel{
     private ImageButton musicOnButton, musicOffButton, homeButton;
+    private ImageButton safetyAlgoButton, resourceRequestButton;
     public OutputPanel() {
-        super("bg/input-panel.png");
+        super("bg/output-panel.png");
 
         musicOnButton = new ImageButton("buttons/volume-on.png");
         musicOffButton = new ImageButton("buttons/volume-off.png");
@@ -18,17 +19,26 @@ public class OutputPanel extends Panel{
         homeButton.setBounds(1010, 25, 47, 47);
 
 
+        safetyAlgoButton = new ImageButton("buttons/safety-algo.png");
+        resourceRequestButton = new ImageButton("buttons/resource-req.png");
+        safetyAlgoButton.setBounds(671, 485, 270, 43);
+        resourceRequestButton.setBounds(671, 540, 270, 43);
+
         setListeners();
 
         this.add(musicOnButton);
         this.add(musicOffButton);
         this.add(homeButton);
+        this.add(safetyAlgoButton);
+        this.add(resourceRequestButton);
     }
 
     private void setListeners() {
         musicOnButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
         musicOffButton.hover("buttons/volume-on-hover.png", "buttons/volume-off.png");
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+        safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
+        resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
     }
 
     public void musicClick() {
