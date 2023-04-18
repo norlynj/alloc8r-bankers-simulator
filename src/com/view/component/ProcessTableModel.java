@@ -16,5 +16,10 @@ public class ProcessTableModel extends DefaultTableModel {
         return super.getValueAt(row, col);
     }
 
+    @Override
+    public boolean isCellEditable(int row, int column) {
+        return column != 0;
+    }
+
 
 }
