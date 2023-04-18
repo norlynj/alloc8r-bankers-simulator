@@ -4,22 +4,20 @@ import view.component.Frame;
 import view.component.ImageButton;
 import view.component.Panel;
 import view.component.CustomTable;
-import view.component.ProcessTableModel;
+import view.component.CustomTableModel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.Objects;
 
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton pNPlus, pNMinus, aRNPlus, aRNMinus, runButton;
     private ImageButton resetButton, removeButton;
     private JTextField processNumField, availableResourcesNumField;
-    private ProcessTableModel processTableModel;
-    private DefaultTableModel allocationTableModel, maxTableModel, availableTableModel, requestResourceTableModel;
+    private CustomTableModel processTableModel;
+    private CustomTableModel allocationTableModel, maxTableModel, availableTableModel, requestResourceTableModel;
     private CustomTable processTable, allocationTable, maxTable, availableTable, requestResourceTable;
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, requestResourceTablePane;
 
@@ -73,11 +71,11 @@ public class InputPanel extends Panel {
 
         // Table
         // Create the table model and table
-        processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
-        allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
-        requestResourceTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+        processTableModel = new CustomTableModel(new String[]{"Process ID"}, 3, true);
+        allocationTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
+        maxTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
+        availableTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 1);
+        requestResourceTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 1);
 
         processTable = new CustomTable(processTableModel);
         allocationTable = new CustomTable(allocationTableModel);

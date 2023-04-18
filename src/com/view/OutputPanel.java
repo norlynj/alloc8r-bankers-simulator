@@ -4,16 +4,16 @@ import view.component.*;
 import view.component.Frame;
 import view.component.Label;
 import view.component.Panel;
+import view.component.CustomTableModel;
+
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class OutputPanel extends Panel{
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton safetyAlgoButton, resourceRequestButton;
-    private ProcessTableModel processTableModel;
-    private DefaultTableModel allocationTableModel, maxTableModel, availableTableModel, needTableModel;
+    private CustomTableModel processTableModel, allocationTableModel, maxTableModel, availableTableModel, needTableModel;
     private CustomTable processTable, allocationTable, maxTable, availableTable, needTable;
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
     private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
@@ -38,11 +38,11 @@ public class OutputPanel extends Panel{
 
         // Table
         // Create the table model and table
-        processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
-        allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
-        availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
-        needTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        processTableModel = new CustomTableModel(new String[]{"Process ID"}, 3, true);
+        allocationTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
+        maxTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
+        availableTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 1);
+        needTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
 
         processTable = new CustomTable(processTableModel, false);
         allocationTable = new CustomTable(allocationTableModel, false);
