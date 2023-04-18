@@ -17,7 +17,7 @@ public class Label extends JLabel {
     }
 
     public Label(String text, boolean multiLine, int alignment) {
-        this(text, 15, true, alignment);
+        this(text, 18, multiLine, alignment);
     }
 
     public Label(String text, int fontSize, boolean multiLine, int alignment) {

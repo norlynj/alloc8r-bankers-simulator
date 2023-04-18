@@ -1,12 +1,18 @@
 package view;
 
-import view.component.Frame;
-import view.component.ImageButton;
-import view.component.Panel;
+import view.component.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class OutputPanel extends Panel{
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton safetyAlgoButton, resourceRequestButton;
+    private ProcessTableModel processTableModel;
+    private DefaultTableModel allocationTableModel, maxTableModel, availableTableModel, needTableModel;
+    private CustomTable processTable, allocationTable, maxTable, availableTable, needTable;
+    private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
+    private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
+
     public OutputPanel() {
         super("bg/output-panel.png");
 
@@ -17,18 +23,59 @@ public class OutputPanel extends Panel{
         musicOnButton.setBounds(945, 25, 47, 47);
         musicOffButton.setBounds(945, 25, 47, 47);
         homeButton.setBounds(1010, 25, 47, 47);
-
+        musicOffButton.setVisible(false);
 
         safetyAlgoButton = new ImageButton("buttons/safety-algo.png");
         resourceRequestButton = new ImageButton("buttons/resource-req.png");
         safetyAlgoButton.setBounds(671, 485, 270, 43);
         resourceRequestButton.setBounds(671, 540, 270, 43);
 
+
+        // Table
+        // Create the table model and table
+        processTableModel = new ProcessTableModel(new String[]{"Process ID"}, 3);
+        allocationTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        maxTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+        availableTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 1);
+        needTableModel = new DefaultTableModel(new String[]{"A", "B", "C"}, 3);
+
+        processTable = new CustomTable(processTableModel, false);
+        allocationTable = new CustomTable(allocationTableModel, false);
+        maxTable = new CustomTable(maxTableModel, false);
+        availableTable = new CustomTable(availableTableModel, false);
+        needTable = new CustomTable(needTableModel, false);
+
+        processTablePane = processTable.createTablePane(75, 171, 137, 235);
+        allocationTablePane = allocationTable.createTablePane(215, 171, 220, 235);
+        maxTablePane = maxTable.createTablePane(438, 171, 220, 235);
+        needTablePane = needTable.createTablePane(661, 171, 220, 235);
+        availableTablePane = availableTable.createTablePane(884, 171, 185, 235);
+
+        // Labels
+        stepsLabel = new Label(("For i = 0\n" +
+                "Need0 = 7, 4, 3\n" +
+                "Finish[0] is false and Need > Work\n" +
+                "So P0 must wait"), true, SwingConstants.CENTER);
+        requestResourceLabel = new Label("1, 2, 3");
+        safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
+
+        stepsLabel.setBounds(144, 467, 444, 134);
+        requestResourceLabel.setBounds(867, 603, 94, 21);
+        safeSequenceLabel.setBounds(234, 720, 641, 34);
+
+
         setListeners();
 
         this.add(musicOnButton);
         this.add(musicOffButton);
-        this.add(homeButton);
+        this.add(homeButton);this.add(processTablePane);
+        this.add(allocationTablePane);
+        this.add(maxTablePane);
+        this.add(availableTablePane);
+        this.add(needTablePane);
+        this.add(stepsLabel);
+        this.add(requestResourceLabel);
+        this.add(safeSequenceLabel);
         this.add(safetyAlgoButton);
         this.add(resourceRequestButton);
     }
