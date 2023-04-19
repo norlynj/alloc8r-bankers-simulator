@@ -35,17 +35,16 @@ public abstract class BankersAlgorithm {
         return processes;
     }
 
-    public Process getProcess(String p)
-    {
-        for (Process process : processes)
-        {
-            if (process.getProcessName().equals(p))
-            {
-                return process;
-            }
-        }
+    public int getResourcesNumber() {
+        return resourcesNumber;
+    }
 
-        return null;
+    public int[] getAvailableResources() {
+        return availableResources;
+    }
+
+    public int[] getRequestResource() {
+        return requestResource;
     }
 
 
