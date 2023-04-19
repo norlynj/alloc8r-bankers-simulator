@@ -63,9 +63,23 @@ public class Alloc8r {
     }
 
     public void listenToInputDecision(){
-        inputDecisionPanel.getFromATextFileButton();
-        inputDecisionPanel.getUserDefinedButton().addActionListener(e -> cardLayout.show(contentPane, "inputPanel" ));
-        inputDecisionPanel.getRandomButton();
+        inputDecisionPanel.getFromATextFileButton().addActionListener(e -> {
+            ArrayList textFile = inputDecisionPanel.getDataFromFiles();
+            if (!textFile.isEmpty() ) {
+                cardLayout.show(contentPane, "inputPanel");
+//                inputPanel.populateFromATextFile(textFile);
+            }
+//            inputPanel.getRandomizeButton().setVisible(false);
+
+        });
+        inputDecisionPanel.getUserDefinedButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "inputPanel" );
+//            inputPanel.getRandomizeButton().setVisible(false);
+        });
+        inputDecisionPanel.getRandomButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "inputPanel" );
+//            inputPanel.getRandomizeButton().setVisible(true);
+        });
         inputDecisionPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
@@ -90,6 +104,7 @@ public class Alloc8r {
         inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
         inputPanel.getRunButton().addActionListener(e -> {
+            outputPanel.setBankers(inputPanel.getBankers());
             cardLayout.show(contentPane, "outputPanel");
         });
     }
