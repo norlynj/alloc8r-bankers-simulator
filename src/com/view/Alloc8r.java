@@ -47,6 +47,7 @@ public class Alloc8r {
         listenToInput();
         listenToInputDecision();
         listenToHow();
+        listenToOutput();
 
         frame.add(contentPane);
         frame.pack();
