@@ -10,15 +10,15 @@ public class SafetyAlgorithm extends BankersAlgorithm {
         int count=0;
         int m = getAvailableResources().length;
         int n = getProcesses().size();
-        int safeSequence[] = new int[n];
-
         //visited array to find the already allocated process
         boolean visited[] = new boolean[n];
+        int safeSequence[] = new int[n];
+
         for (int i = 0; i < n; i++) {
             visited[i] = false;
         }
 
-        //work array to store the copy of available resources
+        // work = available
         int work[] = new int[m];
         for (int i = 0;i < m; i++) {
             work[i] = getAvailableResources()[i];
@@ -59,12 +59,15 @@ public class SafetyAlgorithm extends BankersAlgorithm {
         }
         else {
             //System.out.println("The given System is Safe");
+            String[] ss = new String[n];
             System.out.println("Following is the SAFE Sequence");
             for (int i = 0; i < n; i++) {
+                ss[i] = ("P" + safeSequence[i]);
                 System.out.print("P" + safeSequence[i]);
                 if (i != n - 1)
                     System.out.print(" -> ");
             }
+            setSafeSequence(ss);
         }
     }
 }

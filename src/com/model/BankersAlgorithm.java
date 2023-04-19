@@ -9,6 +9,8 @@ public abstract class BankersAlgorithm {
     private int[] availableResources;
     private int[] requestResource;
 
+    private String[] safeSequence;
+
 
 
     public BankersAlgorithm() {
@@ -47,7 +49,16 @@ public abstract class BankersAlgorithm {
         return requestResource;
     }
 
+    public void setSafeSequence(String[] ss) {
+        safeSequence = ss;
+    }
+
+    public String[] getSafeSequence() {
+        return safeSequence;
+    }
+
 
     public abstract void simulate();
+
 
 }
