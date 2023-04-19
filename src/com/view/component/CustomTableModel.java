@@ -34,7 +34,6 @@ public class CustomTableModel extends DefaultTableModel {
 
     @Override
     public void setValueAt(Object value, int row, int column) {
-        System.out.println(value);
         if (value == null || value.toString().isEmpty()) {
             super.setValueAt(null, row, column);
             return;
