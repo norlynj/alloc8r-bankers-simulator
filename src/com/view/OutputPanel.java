@@ -1,5 +1,7 @@
 package view;
 
+import model.BankersAlgorithm;
+import model.Process;
 import view.component.*;
 import view.component.Frame;
 import view.component.Label;
@@ -9,6 +11,7 @@ import view.component.CustomTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 
 public class OutputPanel extends Panel{
     private ImageButton musicOnButton, musicOffButton, homeButton;
@@ -89,6 +92,33 @@ public class OutputPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
         safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
         resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
+    }
+
+    public void setBankers(BankersAlgorithm banker) {
+        int processTotal = banker.getProcesses().size();
+        int resourcesTotal = banker.getProcesses().get(0).getNeed().length;
+
+        processTableModel.setRowCount(processTotal);
+        allocationTableModel.setRowCount(processTotal);
+        allocationTableModel.setColumnCount(resourcesTotal);
+        maxTableModel.setRowCount(processTotal);
+        maxTableModel.setColumnCount(resourcesTotal);
+        needTableModel.setRowCount(processTotal);
+        needTableModel.setColumnCount(resourcesTotal);
+        availableTableModel.setColumnCount(resourcesTotal);
+        requestResourceLabel.setText(Arrays.toString(banker.getRequestResource()).replace("[", "").replace("]", "").replace(",", ", "));
+        safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
+
+        for (int i = 0; i < allocationTableModel.getRowCount(); i++) {
+            Process process = banker.getProcesses().get(i);
+            processTableModel.setValueAt(process.getProcessName(), i, 0);
+            for (int j = 0; j < process.getAllocation().length; j++) {
+                allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
+                maxTableModel.setValueAt(process.getMaximumClaim()[j],i, j);
+                needTableModel.setValueAt(process.getNeed()[j],i, j);
+                availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
+            }
+        }
     }
 
     public void musicClick() {
