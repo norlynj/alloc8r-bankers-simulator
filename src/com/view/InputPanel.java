@@ -241,7 +241,7 @@ public class InputPanel extends Panel {
         return true;
     }
 
-    private void run() {
+    private BankersAlgorithm run() {
         BankersAlgorithm banker = new SafetyAlgorithm();
         String processName;
 
@@ -270,6 +270,8 @@ public class InputPanel extends Panel {
         for (int i = 0; i < banker.getProcesses().size(); i++) {
             System.out.println(banker.getProcesses().get(i).getProcessName());
         }
+        banker.simulate();
+        return banker;
     }
 
     public static void main(String[] args) {
