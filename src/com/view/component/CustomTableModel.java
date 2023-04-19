@@ -42,7 +42,7 @@ public class CustomTableModel extends DefaultTableModel {
         try {
             int intValue = Integer.parseInt(value.toString());
 
-            if (intValue < 1 || intValue > 30) {
+            if (intValue < 0 || intValue > 30) {
                 fireTableCellUpdated(row, column);
                 return;
             }
