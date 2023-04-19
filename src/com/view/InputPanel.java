@@ -1,5 +1,8 @@
 package view;
 
+import model.BankersAlgorithm;
+import model.SafetyAlgorithm;
+import model.Process;
 import view.component.Frame;
 import view.component.ImageButton;
 import view.component.Panel;
@@ -147,6 +150,7 @@ public class InputPanel extends Panel {
                 processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) - 1));
             }
         });
+        runButton.addActionListener( e -> run());
         
         listenToUserInput();
     }
@@ -235,6 +239,37 @@ public class InputPanel extends Panel {
             }
         }
         return true;
+    }
+
+    private void run() {
+        BankersAlgorithm banker = new SafetyAlgorithm();
+        String processName;
+
+        //get available and resource request
+        int[] available = new int[Integer.parseInt(availableResourcesNumField.getText())];
+        int[] request = new int[Integer.parseInt(availableResourcesNumField.getText())];
+        for (int i = 0; i < available.length; i++) {
+            available[i] = (int) availableTableModel.getValueAt(0, i);
+            request[i] = (int) requestResourceTableModel.getValueAt(0, i);
+        }
+        banker.setAvailableResources(available);
+        banker.setRequestResource(request);
+
+        //get allocation and max
+        for (int i = 0; i < allocationTableModel.getRowCount(); i++) {
+            int[] allocation = new int[available.length];
+            int[] max = new int[available.length];
+            processName = (String) processTableModel.getValueAt(i, 0);
+            for (int j = 0; j < allocation.length; j++) {
+                allocation[j] = (int) allocationTableModel.getValueAt(i, j);
+                max[j] = (int) maxTableModel.getValueAt(i, j);
+            }
+            banker.setResourcesNumber(Integer.parseInt(processNumField.getText()));
+            banker.add(new Process(processName, allocation, max));
+        }
+        for (int i = 0; i < banker.getProcesses().size(); i++) {
+            System.out.println(banker.getProcesses().get(i).getProcessName());
+        }
     }
 
     public static void main(String[] args) {
