@@ -265,6 +265,14 @@ public class InputPanel extends Panel {
         return banker;
     }
 
+    public void resetTables() {
+        System.out.println("RESET");
+        allocationTableModel.reset();
+        maxTableModel.reset();
+        requestResourceTableModel.reset();
+        availableTableModel.reset();
+    }
+
     public static void main(String[] args) {
         InputPanel m = new InputPanel();
         Frame frame = new Frame("Input Panel");

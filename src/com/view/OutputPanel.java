@@ -93,11 +93,13 @@ public class OutputPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
         safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
         resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
+        safetyAlgoButton.addActionListener(e -> simulateSafety());
         resourceRequestButton.addActionListener(e -> simulateRequest());
     }
 
     public void setBankers(BankersAlgorithm banker) {
         this.banker = banker;
+        setListeners();
         banker.calculateSafeSequence();
     }
 
@@ -140,6 +142,17 @@ public class OutputPanel extends Panel{
 
     private void simulateRequest() {
         banker.requestResource();
+
+        //repaint table
+        for (int i = 0; i < banker.getProcesses().size(); i++) {
+            Process process = banker.getProcesses().get(i);
+            processTableModel.setValueAt(process.getProcessName(), i, 0);
+            for (int j = 0; j < process.getAllocation().length; j++) {
+                allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
+                needTableModel.setValueAt(process.getNeed()[j],i, j);
+                availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
+            }
+        }
     }
 
     public void musicClick() {
@@ -150,6 +163,13 @@ public class OutputPanel extends Panel{
             musicOnButton.setVisible(false);
             musicOffButton.setVisible(true);
         }
+    }
+
+    public void resetTables() {
+        allocationTableModel.reset();
+        maxTableModel.reset();
+        needTableModel.reset();
+        availableTableModel.reset();
     }
 
     public static void main(String[] args) {

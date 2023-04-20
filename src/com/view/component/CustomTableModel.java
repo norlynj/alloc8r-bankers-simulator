@@ -14,6 +14,14 @@ public class CustomTableModel extends DefaultTableModel {
         super(columnNames, rowCount);
     }
 
+    public void reset() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                setValueAt(null, i, j);
+            }
+        }
+    }
+
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return Integer.class;

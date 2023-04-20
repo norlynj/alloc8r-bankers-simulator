@@ -121,31 +121,40 @@ public class BankersAlgorithm {
     }
 
     public boolean requestResource() {
-        // Check if the request can be granted.
-        int processIndex = -1;
+        // Find the first process whose need can be satisfied by the request.
+        int matchingProcessIndex = -1;
         Process process = null;
+        Process nextProcess = null;
         for (int i = 0; i < processes.size(); i++) {
-            if (Arrays.equals(processes.get(i).getAllocation(), requestResource)) {
-                processIndex = i;
+            int[] need = processes.get(i).getNeed();
+            boolean needSatisfied = Arrays.compare(requestResource, need) <= 0;
+            if (needSatisfied) {
+                matchingProcessIndex = i;
                 process = processes.get(i);
+                nextProcess = processes.get(i+1);
                 break;
             }
         }
-        if (processIndex == -1) {
-            return false; // Process not found.
+        if (process == null) {
+            // Request cannot be granted.
+            return false;
         }
 
+        System.out.println("\nCheck Request <= Work :");
         for (int i = 0; i < availableResources.length; i++) {
             if (requestResource[i] > availableResources[i]) {
+                System.out.println(Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is false");
                 return false; // Request cannot be granted.
             }
         }
+        System.out.println(Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is true. \nWe grant the request.");
+
 
         // Grant the request.
         for (int i = 0; i < availableResources.length; i++) {
             availableResources[i] -= requestResource[i];
-            process.getAllocation()[i] += requestResource[i];
-            process.getNeed()[i] -= requestResource[i];
+            nextProcess.getAllocation()[i] += requestResource[i];
+            nextProcess.getNeed()[i] -= requestResource[i];
         }
         return true;
     }

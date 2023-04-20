@@ -93,6 +93,8 @@ public class Alloc8r {
         outputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         outputPanel.getHomeButton().addActionListener(e -> {
             cardLayout.show(contentPane, "menuPanel");
+            inputPanel.resetTables();
+            outputPanel.resetTables();
         });
     }
 
