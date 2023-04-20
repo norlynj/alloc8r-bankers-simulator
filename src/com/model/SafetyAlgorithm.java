@@ -7,31 +7,30 @@ import java.util.Arrays;
 * Step 2: Determine the safe sequence
 */
 public class SafetyAlgorithm extends BankersAlgorithm {
-    @Override
     public void simulate() {
         int count=0;
         int numberOfResources = getAvailableResources().length;
         int numberOfProcesses = getProcesses().size();
-        //visited array to find the already allocated process
-        boolean visited[] = new boolean[numberOfProcesses];
-        int safeSequence[] = new int[numberOfProcesses];
 
-        for (int i = 0; i < numberOfProcesses; i++) {
-            visited[i] = false;
-        }
+        // Initialize the visited and safeSequence arrays to default values.
+        boolean[] visited = new boolean[numberOfProcesses];
+        int[] safeSequence = new int[numberOfProcesses];
+        Arrays.fill(visited, false);
 
-        // work = available
-        int work[] = Arrays.copyOf(getAvailableResources(), numberOfResources);
+        // Initialize the work array to the available resources.
+        int[] work = Arrays.copyOf(getAvailableResources(), numberOfResources);
 
         while (count < numberOfProcesses) {
             boolean flag = false;
             for (int i = 0; i < numberOfProcesses; i++) {
-                if (visited[i] == false) {
+                Process process = getProcesses().get(i);
+
+                if (!visited[i]) {
                     System.out.println("\nFor Process " + i);
                     int j;
                     for (j = 0; j < numberOfResources; j++) {
-                        if (getProcesses().get(i).getNeed()[j] > work[j]) {
-                            System.out.print("     Finish["+i+"] is false and Need > Work so P"+i + " must wait.");
+                        if (process.getNeed()[j] > work[j]) {
+                            System.out.println("     Finish["+i+"] is false and Need > Work so P"+i + " must wait.");
                             break;
                         }
                     }
@@ -40,16 +39,23 @@ public class SafetyAlgorithm extends BankersAlgorithm {
                         safeSequence[count++]=i;
                         visited[i]=true;
                         flag=true;
-                        System.out.println("     Finish["+i+"] is true and Need < Work so P"+i + " must be kept in the safe sequence.");
+                        System.out.print("     Finish["+i+"] is true and Need <= Work so P"+i + " must be kept in the safe sequence.\n     Work = Work + Allocation =  ");
 
                         for (j = 0;j < numberOfResources; j++) {
-                            System.out.println("     Work = Work + Allocation, so: " + work[j] + " + " + getProcesses().get(i).getAllocation()[j] + " = " + (work[j] + getProcesses().get(i).getAllocation()[j]));
-                            work[j] = work[j]+getProcesses().get(i).getAllocation()[j];
+                            System.out.print((work[j] + process.getAllocation()[j]) + ", ");
+                            work[j] = work[j]+process.getAllocation()[j];
                         }
                     }
+                    // Create a string representation of the Finish array
+                    String finishString = "\n     Finish = [";
+                    for (int k = 0; k < numberOfProcesses; k++) {
+                        finishString += " " + visited[k] + " |";
+                    }
+                    finishString = finishString.substring(0, finishString.length() - 1) + " ]";
+                    System.out.println(finishString);
                 }
             }
-            if (flag == false) {
+            if (!flag) {
                 break;
             }
         }
