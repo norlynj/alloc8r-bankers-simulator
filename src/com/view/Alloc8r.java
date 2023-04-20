@@ -64,12 +64,9 @@ public class Alloc8r {
 
     public void listenToInputDecision(){
         inputDecisionPanel.getFromATextFileButton().addActionListener(e -> {
-            ArrayList textFile = inputDecisionPanel.getDataFromFiles();
-            if (!textFile.isEmpty() ) {
-                cardLayout.show(contentPane, "inputPanel");
-//                inputPanel.populateFromATextFile(textFile);
-            }
-//            inputPanel.getRandomizeButton().setVisible(false);
+            inputDecisionPanel.processInput(inputPanel);
+            cardLayout.show(contentPane, "inputPanel");
+
 
         });
         inputDecisionPanel.getUserDefinedButton().addActionListener(e -> {

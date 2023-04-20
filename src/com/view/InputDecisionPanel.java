@@ -18,10 +18,9 @@ import java.util.Objects;
 public class InputDecisionPanel extends Panel{
     private ImageButton fromATextFileButton, userDefinedButton, randomButton;
     private ImageButton musicOnButton, musicOffButton, homeButton;
+
     public InputDecisionPanel() {
         super("bg/input-choice-panel.png");
-
-
 
         fromATextFileButton = new ImageButton("buttons/fromtext.png");
         userDefinedButton = new ImageButton("buttons/user.png");
@@ -68,7 +67,7 @@ public class InputDecisionPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
     }
 
-    public ArrayList getDataFromFiles() {
+    public void processInput(InputPanel inputPanel) {
         String resourcePath = "/resources/text/";
         URL resourceUrl = InputDecisionPanel.class.getResource(resourcePath);
 
@@ -89,27 +88,99 @@ public class InputDecisionPanel extends Panel{
 
                 try (BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
                     String line;
+                    int lineNum = 1;
+                    int processNum = 0;
+                    int resourcesNum = 0;
                     while ((line = br.readLine()) != null) {
-                        String[] tokens = line.split(",");
-                        if (tokens.length != 3) {
-                            JOptionPane.showMessageDialog(null, "Invalid line: " + line);
+                        if (line.trim().isEmpty()) {
                             continue;
                         }
-                        int[] values = new int[3];
-                        for (int i = 0; i < 3; i++) {
-                            values[i] = Integer.parseInt(tokens[i]);
+                        if (lineNum == 1) {
+                            try {
+
+                                if (lineNum == 1) {
+                                    try {
+                                        processNum = Integer.parseInt(line.split(": ")[1]);
+                                        lineNum++;
+                                        continue;
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        System.err.println("Error: Invalid format in line 1: " + line);
+                                        System.exit(1);
+                                    }
+                                } else if (lineNum == 2) {
+                                    try {
+                                        resourcesNum = Integer.parseInt(line.split(": ")[1]);
+                                        lineNum++;
+                                        continue;
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        System.err.println("Error: Invalid format in line 2: " + line);
+                                        System.exit(1);
+                                    }
+                                }
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                System.err.println("Error: Invalid format in line 1: " + line);
+                                System.exit(1);
+                            }
+                        } else if (lineNum == 2) {
+                            resourcesNum = Integer.parseInt(line.split(": ")[1]);
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[allocation]")) {
+                            inputPanel.getAllocationTableModel().setColumnCount(resourcesNum);
+                            inputPanel.getAllocationTableModel().setRowCount(processNum);
+                            // Read values for allocation table
+                            for (int i = 0; i < processNum; i++) {
+                                String[] values = br.readLine().split(",");
+                                for (int j = 0; j < resourcesNum; j++) {
+                                    inputPanel.getAllocationTableModel().setValueAt(Integer.parseInt(values[j]), i, j);
+                                }
+                            }
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[max]")) {
+                            inputPanel.getMaxTableModel().setColumnCount(resourcesNum);
+                            inputPanel.getMaxTableModel().setRowCount(processNum);
+                            // Read values for max table
+                            for (int i = 0; i < processNum; i++) {
+                                String[] values = br.readLine().split(",");
+                                for (int j = 0; j < resourcesNum; j++) {
+                                    inputPanel.getMaxTableModel().setValueAt(Integer.parseInt(values[j]), i, j);
+                                }
+                            }
+                            lineNum++;
+                            continue;
+
+                        } else if (line.startsWith("[available]")) {
+                            inputPanel.getAvailableTableModel().setColumnCount(resourcesNum);
+                            inputPanel.getAvailableTableModel().setRowCount(1);
+                            // Read values for available table
+                            String[] values = br.readLine().split(",");
+                            for (int i = 0; i < resourcesNum; i++) {
+                                inputPanel.getAvailableTableModel().setValueAt(Integer.parseInt(values[i]), 0, i);
+                            }
+                            lineNum++;
+                            continue;
+
+                        } else if (line.startsWith("[request]")) {
+                            inputPanel.getRequestResourceTableModel().setColumnCount(resourcesNum);
+                            inputPanel.getRequestResourceTableModel().setRowCount(1);
+                            // Read values for request table
+                            String[] values = br.readLine().split(",");
+                            for (int i = 0; i < resourcesNum; i++) {
+                                inputPanel.getRequestResourceTableModel().setValueAt(Integer.parseInt(values[i]), 0, i);
+                            }
+                            lineNum++;
+                            continue;
                         }
-                        valuesList.add(values);
+
                     }
                 } catch (IOException e) {
                     JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage());
-                    return valuesList;
                 }
             }
         } else {
             JOptionPane.showMessageDialog(null, "No file selected");
         }
-        return valuesList;
     }
 
     public void musicClick() {

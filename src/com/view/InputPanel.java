@@ -285,6 +285,34 @@ public class InputPanel extends Panel {
         }
     }
 
+    public CustomTableModel getProcessTableModel() {
+        return processTableModel;
+    }
+
+    public CustomTableModel getAllocationTableModel() {
+        return allocationTableModel;
+    }
+
+    public CustomTableModel getMaxTableModel() {
+        return maxTableModel;
+    }
+
+    public CustomTableModel getAvailableTableModel() {
+        return availableTableModel;
+    }
+
+    public CustomTableModel getRequestResourceTableModel() {
+        return requestResourceTableModel;
+    }
+
+    public JTextField getProcessNumField() {
+        return processNumField;
+    }
+
+    public JTextField getAvailableResourcesNumField() {
+        return availableResourcesNumField;
+    }
+
     public ImageButton getMusicOnButton() {
         return musicOnButton;
     }
