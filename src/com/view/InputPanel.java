@@ -1,7 +1,6 @@
 package view;
 
 import model.BankersAlgorithm;
-import model.SafetyAlgorithm;
 import model.Process;
 import view.component.Frame;
 import view.component.ImageButton;
@@ -13,7 +12,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.util.Objects;
 
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
@@ -240,7 +238,7 @@ public class InputPanel extends Panel {
     }
 
     public BankersAlgorithm getBankers() {
-        BankersAlgorithm banker = new SafetyAlgorithm();
+        BankersAlgorithm banker = new BankersAlgorithm();
         String processName;
 
         //get available and resource request
@@ -263,7 +261,7 @@ public class InputPanel extends Panel {
         }
         banker.setAvailableResources(available);
         banker.setRequestResource(request);
-        banker.simulate();
+        banker.calculateSafeSequence();
         return banker;
     }
 

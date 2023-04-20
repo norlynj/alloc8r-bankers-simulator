@@ -20,6 +20,7 @@ public class OutputPanel extends Panel{
     private CustomTable processTable, allocationTable, maxTable, availableTable, needTable;
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
     private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
+    private BankersAlgorithm banker;
 
     public OutputPanel() {
         super("bg/output-panel.png");
@@ -92,29 +93,36 @@ public class OutputPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
         safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
         resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
+        resourceRequestButton.addActionListener(e -> simulateRequest());
     }
 
     public void setBankers(BankersAlgorithm banker) {
+        this.banker = banker;
+        banker.calculateSafeSequence();
+    }
+
+    public void populateTable() {
         int processTotal = banker.getProcesses().size();
         int resourcesTotal = banker.getProcesses().get(0).getNeed().length;
 
-        processTableModel.setRowCount(processTotal);
-        allocationTableModel.setRowCount(processTotal);
+        processTableModel.setNumRows(processTotal);
+        allocationTableModel.setNumRows(processTotal);
         allocationTableModel.setColumnCount(resourcesTotal);
-        maxTableModel.setRowCount(processTotal);
+        maxTableModel.setNumRows(processTotal);
         maxTableModel.setColumnCount(resourcesTotal);
-        needTableModel.setRowCount(processTotal);
+        needTableModel.setNumRows(processTotal);
         needTableModel.setColumnCount(resourcesTotal);
         availableTableModel.setColumnCount(resourcesTotal);
+        
         requestResourceLabel.setText(Arrays.toString(banker.getRequestResource()).replace("[", "").replace("]", "").replace(",", ", "));
 
-        if (Arrays.stream(banker.getSafeSequence()).anyMatch(obj -> obj == null)){
-            safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
-        } else {
+        if (banker.getSafeSequence() == null){
             safeSequenceLabel.setText("No safe sequence exists");
+        } else {
+            safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
         }
 
-        for (int i = 0; i < allocationTableModel.getRowCount(); i++) {
+        for (int i = 0; i < processTotal; i++) {
             Process process = banker.getProcesses().get(i);
             processTableModel.setValueAt(process.getProcessName(), i, 0);
             for (int j = 0; j < process.getAllocation().length; j++) {
@@ -124,6 +132,14 @@ public class OutputPanel extends Panel{
                 availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
             }
         }
+    }
+
+    private void simulateSafety() {
+        banker.calculateSafeSequence();
+    }
+
+    private void simulateRequest() {
+        banker.requestResource();
     }
 
     public void musicClick() {

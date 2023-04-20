@@ -102,6 +102,7 @@ public class Alloc8r {
         inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
         inputPanel.getRunButton().addActionListener(e -> {
             outputPanel.setBankers(inputPanel.getBankers());
+            outputPanel.populateTable();
             cardLayout.show(contentPane, "outputPanel");
         });
     }
