@@ -107,7 +107,12 @@ public class OutputPanel extends Panel{
         needTableModel.setColumnCount(resourcesTotal);
         availableTableModel.setColumnCount(resourcesTotal);
         requestResourceLabel.setText(Arrays.toString(banker.getRequestResource()).replace("[", "").replace("]", "").replace(",", ", "));
-        safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
+
+        if (Arrays.stream(banker.getSafeSequence()).anyMatch(obj -> obj == null)){
+            safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
+        } else {
+            safeSequenceLabel.setText("No safe sequence exists");
+        }
 
         for (int i = 0; i < allocationTableModel.getRowCount(); i++) {
             Process process = banker.getProcesses().get(i);

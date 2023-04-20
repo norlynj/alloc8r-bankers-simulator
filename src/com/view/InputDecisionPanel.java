@@ -77,8 +77,7 @@ public class InputDecisionPanel extends Panel{
         JFileChooser fileChooser = new JFileChooser(resourceFile);
         fileChooser.setDialogTitle("Select text file");
         fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
-        int result = fileChooser.showOpenDialog((Component) null);
-        ArrayList<int[]> valuesList = new ArrayList<int[]>();
+        int result = fileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
