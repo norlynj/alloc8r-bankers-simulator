@@ -101,6 +101,7 @@ public class InputDecisionPanel extends Panel{
                                 if (lineNum == 1) {
                                     try {
                                         processNum = Integer.parseInt(line.split(": ")[1]);
+                                        inputPanel.getProcessNumField().setText(String.valueOf(processNum));
                                         lineNum++;
                                         continue;
                                     } catch (ArrayIndexOutOfBoundsException e) {
@@ -110,6 +111,7 @@ public class InputDecisionPanel extends Panel{
                                 } else if (lineNum == 2) {
                                     try {
                                         resourcesNum = Integer.parseInt(line.split(": ")[1]);
+                                        inputPanel.getAvailableResourcesNumField().setText(String.valueOf(resourcesNum));
                                         lineNum++;
                                         continue;
                                     } catch (ArrayIndexOutOfBoundsException e) {
@@ -126,8 +128,6 @@ public class InputDecisionPanel extends Panel{
                             lineNum++;
                             continue;
                         } else if (line.startsWith("[allocation]")) {
-                            inputPanel.getAllocationTableModel().setColumnCount(resourcesNum);
-                            inputPanel.getAllocationTableModel().setRowCount(processNum);
                             // Read values for allocation table
                             for (int i = 0; i < processNum; i++) {
                                 String[] values = br.readLine().split(",");
@@ -138,8 +138,6 @@ public class InputDecisionPanel extends Panel{
                             lineNum++;
                             continue;
                         } else if (line.startsWith("[max]")) {
-                            inputPanel.getMaxTableModel().setColumnCount(resourcesNum);
-                            inputPanel.getMaxTableModel().setRowCount(processNum);
                             // Read values for max table
                             for (int i = 0; i < processNum; i++) {
                                 String[] values = br.readLine().split(",");
@@ -151,8 +149,6 @@ public class InputDecisionPanel extends Panel{
                             continue;
 
                         } else if (line.startsWith("[available]")) {
-                            inputPanel.getAvailableTableModel().setColumnCount(resourcesNum);
-                            inputPanel.getAvailableTableModel().setRowCount(1);
                             // Read values for available table
                             String[] values = br.readLine().split(",");
                             for (int i = 0; i < resourcesNum; i++) {
@@ -162,8 +158,6 @@ public class InputDecisionPanel extends Panel{
                             continue;
 
                         } else if (line.startsWith("[request]")) {
-                            inputPanel.getRequestResourceTableModel().setColumnCount(resourcesNum);
-                            inputPanel.getRequestResourceTableModel().setRowCount(1);
                             // Read values for request table
                             String[] values = br.readLine().split(",");
                             for (int i = 0; i < resourcesNum; i++) {
