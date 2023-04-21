@@ -28,7 +28,6 @@ public class CustomTable extends JTable {
         tableHeader.setFont(HEADER_FONT);
         tableHeader.setBackground(HEADER_BACKGROUND_COLOR);
 
-        setCellSelectionEnabled(false); // disable selection
 
         //Set text to center
         setCenter();
@@ -55,6 +54,7 @@ public class CustomTable extends JTable {
 
     @Override
     public boolean isCellEditable(int row, int column) {
+        setCellSelectionEnabled(!editable); // disable selection
         return editable;
     }
 
