@@ -115,7 +115,12 @@ public class OutputPanel extends Panel{
         needTableModel.setNumRows(processTotal);
         needTableModel.setColumnCount(resourcesTotal);
         availableTableModel.setColumnCount(resourcesTotal);
-        
+
+        allocationTable.setCenter();
+        maxTable.setCenter();
+        availableTable.setCenter();
+        needTable.setCenter();
+
         requestResourceLabel.setText(Arrays.toString(banker.getRequestResource()).replace("[", "").replace("]", "").replace(",", ", "));
 
         if (banker.getSafeSequence() == null){

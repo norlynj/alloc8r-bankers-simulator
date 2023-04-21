@@ -31,6 +31,11 @@ public class CustomTable extends JTable {
         setCellSelectionEnabled(false); // disable selection
 
         //Set text to center
+        setCenter();
+
+    }
+
+    public void setCenter() {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -38,7 +43,6 @@ public class CustomTable extends JTable {
             getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
 
         }
-
     }
 
     public JScrollPane createTablePane(int x, int y, int width, int height) {
@@ -53,4 +57,8 @@ public class CustomTable extends JTable {
     public boolean isCellEditable(int row, int column) {
         return editable;
     }
+
+
+
+
 }

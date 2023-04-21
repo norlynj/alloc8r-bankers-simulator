@@ -198,6 +198,10 @@ public class InputPanel extends Panel {
                             maxTableModel.setColumnCount(value);
                             availableTableModel.setColumnCount(value);
                             requestResourceTableModel.setColumnCount(value);
+                            allocationTable.setCenter();
+                            maxTable.setCenter();
+                            availableTable.setCenter();
+                            requestResourceTable.setCenter();
                         }
                         if (validTable()){
                             runButton.setEnabled(true);
