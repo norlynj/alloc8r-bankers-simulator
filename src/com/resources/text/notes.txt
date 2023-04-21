@@ -1,3 +1,6 @@
-
+app notes
+1. min and max values on table are 0 and 30
+2. tables are validated to validate presence and max => alloc for all input
+3. randomized buttons are bound from 0 to 30
 
 

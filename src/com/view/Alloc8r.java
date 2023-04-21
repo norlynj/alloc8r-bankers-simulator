@@ -66,15 +66,17 @@ public class Alloc8r {
         inputDecisionPanel.getFromATextFileButton().addActionListener(e -> {
             if (inputDecisionPanel.processInput(inputPanel)) {
                 cardLayout.show(contentPane, "inputPanel");
+                inputPanel.getRandomButton().setVisible(false);
             }
         });
         inputDecisionPanel.getUserDefinedButton().addActionListener(e -> {
             cardLayout.show(contentPane, "inputPanel" );
-//            inputPanel.getRandomizeButton().setVisible(false);
+            inputPanel.getRandomButton().setVisible(false);
         });
         inputDecisionPanel.getRandomButton().addActionListener(e -> {
             cardLayout.show(contentPane, "inputPanel" );
-//            inputPanel.getRandomizeButton().setVisible(true);
+            inputPanel.generateRandomData();
+            inputPanel.getRandomButton().setVisible(true);
         });
         inputDecisionPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getMusicOffButton().addActionListener(e -> soundClick());
