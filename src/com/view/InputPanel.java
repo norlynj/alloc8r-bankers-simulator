@@ -148,6 +148,7 @@ public class InputPanel extends Panel {
                 processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) - 1));
             }
         });
+        resetButton.addActionListener( e -> resetTables());
         listenToUserInput();
     }
 
@@ -225,15 +226,10 @@ public class InputPanel extends Panel {
     private boolean validTable() {
 
         for (int row = 0; row < processTable.getRowCount(); row++) {
-            for (int col = 0; col < processTable.getColumnCount(); col++) {
-                if (allocationTable.getValueAt(row, col) == null || allocationTable.toString().trim().isEmpty() || maxTable.getValueAt(row, col) == null || maxTable.toString().trim().isEmpty()) {
+            for (int col = 0; col < allocationTableModel.getColumnCount(); col++) {
+                if (allocationTableModel.getValueAt(row, col) == null || allocationTableModel.toString().trim().isEmpty() || maxTableModel.getValueAt(row, col) == null || maxTableModel.toString().trim().isEmpty() || availableTableModel.getValueAt(0, col) == null || availableTableModel.toString().trim().isEmpty() || requestResourceTableModel.getValueAt(0, col) == null || requestResourceTableModel.toString().trim().isEmpty()) {
                     return false;
                 }
-            }
-        }
-        for (int col = 0; col < availableTable.getColumnCount(); col++) {
-            if (availableTable.getValueAt(0, col) == null || availableTable.toString().trim().isEmpty() || requestResourceTable.getValueAt(0, col) == null || requestResourceTable.toString().trim().isEmpty()) {
-                return false;
             }
         }
         return true;
