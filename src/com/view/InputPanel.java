@@ -231,11 +231,9 @@ public class InputPanel extends Panel {
                 }
             }
         }
-        for (int row = 0; row < availableTable.getRowCount(); row++) {
-            for (int col = 0; col < availableTable.getColumnCount(); col++) {
-                if (availableTable.getValueAt(row, col) == null || availableTable.toString().trim().isEmpty() || requestResourceTable.getValueAt(row, col) == null || requestResourceTable.toString().trim().isEmpty()) {
-                    return false;
-                }
+        for (int col = 0; col < availableTable.getColumnCount(); col++) {
+            if (availableTable.getValueAt(0, col) == null || availableTable.toString().trim().isEmpty() || requestResourceTable.getValueAt(0, col) == null || requestResourceTable.toString().trim().isEmpty()) {
+                return false;
             }
         }
         return true;
