@@ -64,10 +64,9 @@ public class Alloc8r {
 
     public void listenToInputDecision(){
         inputDecisionPanel.getFromATextFileButton().addActionListener(e -> {
-            inputDecisionPanel.processInput(inputPanel);
-            cardLayout.show(contentPane, "inputPanel");
-
-
+            if (inputDecisionPanel.processInput(inputPanel)) {
+                cardLayout.show(contentPane, "inputPanel");
+            }
         });
         inputDecisionPanel.getUserDefinedButton().addActionListener(e -> {
             cardLayout.show(contentPane, "inputPanel" );

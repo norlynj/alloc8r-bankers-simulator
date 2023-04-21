@@ -7,10 +7,7 @@ import view.component.Panel;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -67,7 +64,7 @@ public class InputDecisionPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
     }
 
-    public void processInput(InputPanel inputPanel) {
+    public boolean processInput(InputPanel inputPanel) {
         String resourcePath = "/resources/text/";
         URL resourceUrl = InputDecisionPanel.class.getResource(resourcePath);
 
@@ -95,39 +92,16 @@ public class InputDecisionPanel extends Panel{
                             continue;
                         }
                         if (lineNum == 1) {
-                            try {
-
-                                if (lineNum == 1) {
-                                    try {
-                                        processNum = Integer.parseInt(line.split(": ")[1]);
-                                        inputPanel.getProcessNumField().setText(String.valueOf(processNum));
-                                        lineNum++;
-                                        continue;
-                                    } catch (ArrayIndexOutOfBoundsException e) {
-                                        System.err.println("Error: Invalid format in line 1: " + line);
-                                        System.exit(1);
-                                    }
-                                } else if (lineNum == 2) {
-                                    try {
-                                        resourcesNum = Integer.parseInt(line.split(": ")[1]);
-                                        inputPanel.getAvailableResourcesNumField().setText(String.valueOf(resourcesNum));
-                                        lineNum++;
-                                        continue;
-                                    } catch (ArrayIndexOutOfBoundsException e) {
-                                        System.err.println("Error: Invalid format in line 2: " + line);
-                                        System.exit(1);
-                                    }
-                                }
-                            } catch (ArrayIndexOutOfBoundsException e) {
-                                System.err.println("Error: Invalid format in line 1: " + line);
-                                System.exit(1);
-                            }
+                            processNum = Integer.parseInt(line.split(": ")[1]);
+                            inputPanel.getProcessNumField().setText(String.valueOf(processNum));
+                            lineNum++;
+                            continue;
                         } else if (lineNum == 2) {
                             resourcesNum = Integer.parseInt(line.split(": ")[1]);
+                            inputPanel.getAvailableResourcesNumField().setText(String.valueOf(resourcesNum));
                             lineNum++;
                             continue;
                         } else if (line.startsWith("[allocation]")) {
-                            // Read values for allocation table
                             for (int i = 0; i < processNum; i++) {
                                 String[] values = br.readLine().split(",");
                                 for (int j = 0; j < resourcesNum; j++) {
@@ -137,7 +111,6 @@ public class InputDecisionPanel extends Panel{
                             lineNum++;
                             continue;
                         } else if (line.startsWith("[max]")) {
-                            // Read values for max table
                             for (int i = 0; i < processNum; i++) {
                                 String[] values = br.readLine().split(",");
                                 for (int j = 0; j < resourcesNum; j++) {
@@ -146,7 +119,6 @@ public class InputDecisionPanel extends Panel{
                             }
                             lineNum++;
                             continue;
-
                         } else if (line.startsWith("[available]")) {
                             // Read values for available table
                             String[] values = br.readLine().split(",");
@@ -155,7 +127,6 @@ public class InputDecisionPanel extends Panel{
                             }
                             lineNum++;
                             continue;
-
                         } else if (line.startsWith("[request]")) {
                             // Read values for request table
                             String[] values = br.readLine().split(",");
@@ -165,15 +136,21 @@ public class InputDecisionPanel extends Panel{
                             lineNum++;
                             continue;
                         }
-
                     }
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage());
+                } catch (IOException | ArrayIndexOutOfBoundsException e) {
+                    JOptionPane.showMessageDialog(null, "Error reading file. Please make sure you followed the right formatting");
+                    return false;
                 }
+            }
+            if (selectedFile.length() == 0 || !inputPanel.getRunButton().isEnabled()) {
+                JOptionPane.showMessageDialog(null, "Error reading file. Please make sure you followed the right formatting.");
+                return false;
             }
         } else {
             JOptionPane.showMessageDialog(null, "No file selected");
+            return false;
         }
+        return true;
     }
 
     public void musicClick() {
