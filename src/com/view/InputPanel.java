@@ -293,6 +293,9 @@ public class InputPanel extends Panel {
             banker.setResourcesNumber(Integer.parseInt(processNumField.getText()));
             banker.add(new Process(processName, allocation, max));
         }
+        for (int i = 0; i < banker.getProcesses().size(); i++) {
+            System.out.println(banker.getProcesses().get(i).getProcessName());
+        }
         banker.setAvailableResources(available);
         banker.setRequestResource(request);
         banker.calculateSafeSequence();
@@ -305,6 +308,8 @@ public class InputPanel extends Panel {
         maxTableModel.reset();
         requestResourceTableModel.reset();
         availableTableModel.reset();
+        processNumField.setText("5");
+        availableResourcesNumField.setText("3");
     }
 
     public static void main(String[] args) {

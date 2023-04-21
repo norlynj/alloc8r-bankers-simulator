@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class CustomTableModel extends DefaultTableModel {
     private boolean editable = true;
+    private boolean reset = false;
     public CustomTableModel(String[] columnNames, int rowCount, boolean processID) {
         this(columnNames, rowCount);
         this.editable = !processID;
@@ -15,11 +16,13 @@ public class CustomTableModel extends DefaultTableModel {
     }
 
     public void reset() {
+        this.reset = true;
         for (int i = 0; i < getRowCount(); i++) {
             for (int j = 0; j < getColumnCount(); j++) {
                 setValueAt(null, i, j);
             }
         }
+        this.reset = false;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class CustomTableModel extends DefaultTableModel {
 
     @Override
     public void setValueAt(Object value, int row, int column) {
-        if (value == null || value.toString().isEmpty()) {
+        if (reset || value == null || value.toString().isEmpty()) {
             super.setValueAt(null, row, column);
             return;
         }
