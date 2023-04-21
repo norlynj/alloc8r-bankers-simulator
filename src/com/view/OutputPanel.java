@@ -2,6 +2,7 @@ package view;
 
 import model.BankersAlgorithm;
 import model.Process;
+import model.Utility;
 import view.component.*;
 import view.component.Frame;
 import view.component.Label;
@@ -39,14 +40,38 @@ public class OutputPanel extends Panel{
         safetyAlgoButton.setBounds(671, 485, 270, 43);
         resourceRequestButton.setBounds(671, 540, 270, 43);
 
+        // Labels
+        stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepsLabel.setForeground(Color.white);
+        requestResourceLabel = new Label("1, 2, 3");
+        safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
 
+        stepsLabel.setBounds(144, 467, 444, 134);
+        requestResourceLabel.setBounds(867, 603, 94, 21);
+        safeSequenceLabel.setBounds(234, 720, 641, 34);
+
+        setListeners();
+
+        this.add(musicOnButton);
+        this.add(musicOffButton);
+        this.add(homeButton);
+        this.add(stepsLabel);
+        this.add(requestResourceLabel);
+        this.add(safeSequenceLabel);
+        this.add(safetyAlgoButton);
+        this.add(resourceRequestButton);
+    }
+
+    private void addTable(int process, int resources){
         // Table
         // Create the table model and table
-        processTableModel = new CustomTableModel(new String[]{"Process ID"}, 3, true);
-        allocationTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
-        maxTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
-        availableTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 1);
-        needTableModel = new CustomTableModel(new String[]{"A", "B", "C"}, 3);
+        String[] header = Utility.createHeadersArray(resources) ;
+
+        processTableModel = new CustomTableModel(new String[]{"Process ID"}, process, true);
+        allocationTableModel = new CustomTableModel(header, process);
+        maxTableModel = new CustomTableModel(header, process);
+        availableTableModel = new CustomTableModel(header, 1);
+        needTableModel = new CustomTableModel(header, process);
 
         processTable = new CustomTable(processTableModel, false);
         allocationTable = new CustomTable(allocationTableModel, false);
@@ -59,32 +84,11 @@ public class OutputPanel extends Panel{
         maxTablePane = maxTable.createTablePane(438, 171, 220, 235);
         needTablePane = needTable.createTablePane(661, 171, 220, 235);
         availableTablePane = availableTable.createTablePane(884, 171, 185, 235);
-
-        // Labels
-        stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
-        stepsLabel.setForeground(Color.white);
-        requestResourceLabel = new Label("1, 2, 3");
-        safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
-
-        stepsLabel.setBounds(144, 467, 444, 134);
-        requestResourceLabel.setBounds(867, 603, 94, 21);
-        safeSequenceLabel.setBounds(234, 720, 641, 34);
-
-
-        setListeners();
-
-        this.add(musicOnButton);
-        this.add(musicOffButton);
-        this.add(homeButton);this.add(processTablePane);
+        this.add(processTablePane);
         this.add(allocationTablePane);
         this.add(maxTablePane);
         this.add(availableTablePane);
         this.add(needTablePane);
-        this.add(stepsLabel);
-        this.add(requestResourceLabel);
-        this.add(safeSequenceLabel);
-        this.add(safetyAlgoButton);
-        this.add(resourceRequestButton);
     }
 
     private void setListeners() {
@@ -107,26 +111,14 @@ public class OutputPanel extends Panel{
         int processTotal = banker.getProcesses().size();
         int resourcesTotal = banker.getProcesses().get(0).getNeed().length;
 
-        processTableModel.setNumRows(processTotal);
-        allocationTableModel.setNumRows(processTotal);
-        allocationTableModel.setColumnCount(resourcesTotal);
-        maxTableModel.setNumRows(processTotal);
-        maxTableModel.setColumnCount(resourcesTotal);
-        needTableModel.setNumRows(processTotal);
-        needTableModel.setColumnCount(resourcesTotal);
-        availableTableModel.setColumnCount(resourcesTotal);
+        addTable(processTotal, resourcesTotal);
 
-        allocationTable.setCenter();
-        maxTable.setCenter();
-        availableTable.setCenter();
-        needTable.setCenter();
-
-        requestResourceLabel.setText(Arrays.toString(banker.getRequestResource()).replace("[", "").replace("]", "").replace(",", ", "));
+        requestResourceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
 
         if (banker.getSafeSequence() == null){
             safeSequenceLabel.setText("No safe sequence exists");
         } else {
-            safeSequenceLabel.setText(Arrays.toString(banker.getSafeSequence()).replace("[", "").replace("]", "").replace(",", ", "));
+            safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
         }
 
         for (int i = 0; i < processTotal; i++) {
