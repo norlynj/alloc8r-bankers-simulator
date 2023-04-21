@@ -1,7 +1,6 @@
 package view;
 
 import model.BankersAlgorithm;
-import model.SafetyAlgorithm;
 import model.Process;
 import view.component.Frame;
 import view.component.ImageButton;
@@ -13,12 +12,12 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.util.Objects;
+import java.util.Random;
 
 public class InputPanel extends Panel {
     private ImageButton musicOnButton, musicOffButton, homeButton;
     private ImageButton pNPlus, pNMinus, aRNPlus, aRNMinus, runButton;
-    private ImageButton resetButton, removeButton;
+    private ImageButton randomButton, resetButton, removeButton;
     private JTextField processNumField, availableResourcesNumField;
     private CustomTableModel processTableModel;
     private CustomTableModel allocationTableModel, maxTableModel, availableTableModel, requestResourceTableModel;
@@ -96,8 +95,10 @@ public class InputPanel extends Panel {
         runButton.setEnabled(false); // should have inputs first
 
         // Reset and Remove buttons
+        randomButton = new ImageButton("buttons/randomize.png");
         resetButton = new ImageButton("buttons/reset.png");
         removeButton = new ImageButton("buttons/remove.png");
+        randomButton.setBounds(700, 657, 130, 42);
         resetButton.setBounds(846, 657, 94, 42);
         removeButton.setBounds(963, 657, 94, 42);
 
@@ -118,6 +119,7 @@ public class InputPanel extends Panel {
         this.add(maxTablePane);
         this.add(availableTablePane);
         this.add(requestResourceTablePane);
+        this.add(randomButton);
         this.add(resetButton);
         this.add(removeButton);
         this.add(runButton);
@@ -132,6 +134,7 @@ public class InputPanel extends Panel {
         musicOnButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
         musicOffButton.hover("buttons/volume-on-hover.png", "buttons/volume-off.png");
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+        randomButton.hover("buttons/randomize-hover.png", "buttons/randomize.png");
         resetButton.hover("buttons/reset-hover.png", "buttons/reset.png");
         removeButton.hover("buttons/remove-hover.png", "buttons/remove.png");
         runButton.hover("buttons/run-hover.png", "buttons/run.png");
@@ -141,6 +144,7 @@ public class InputPanel extends Panel {
         aRNMinus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) - 1)));
         aRNPlus.addActionListener(e -> availableResourcesNumField.setText(String.valueOf(Integer.parseInt(availableResourcesNumField.getText()) + 1)));
 
+        randomButton.addActionListener(e -> generateRandomData());
         removeButton.addActionListener(e -> {
             int row = processTable.getSelectedRow();
             if (row > -1 && processTable.getRowCount() > 3) {
@@ -150,9 +154,32 @@ public class InputPanel extends Panel {
                 processNumField.setText(String.valueOf(Integer.parseInt(processNumField.getText()) - 1));
             }
         });
-        runButton.addActionListener( e -> run());
-        
+        resetButton.addActionListener( e -> resetTables());
         listenToUserInput();
+    }
+
+    public void generateRandomData() {
+        Random random = new Random();
+
+        for (int row = 0; row < processTable.getRowCount(); row++) {
+            for (int col = 0; col < allocationTableModel.getColumnCount(); col++) {
+                int max = random.nextInt(31);
+                maxTableModel.setValueAt(max, row, col);
+                int alloc = random.nextInt(max + 1);
+                allocationTableModel.setValueAt(alloc, row, col);
+
+            }
+        }
+
+        for (int col = 0; col < availableTableModel.getColumnCount(); col++) {
+            int randomValue = random.nextInt(31);
+            availableTableModel.setValueAt(randomValue, 0, col);
+        }
+
+        for (int col = 0; col < requestResourceTableModel.getColumnCount(); col++) {
+            int randomValue = random.nextInt(31);
+            requestResourceTableModel.setValueAt(randomValue, 0, col);
+        }
     }
 
     private void listenToUserInput() {
@@ -202,6 +229,10 @@ public class InputPanel extends Panel {
                             maxTableModel.setColumnCount(value);
                             availableTableModel.setColumnCount(value);
                             requestResourceTableModel.setColumnCount(value);
+                            allocationTable.setCenter();
+                            maxTable.setCenter();
+                            availableTable.setCenter();
+                            requestResourceTable.setCenter();
                         }
                         if (validTable()){
                             runButton.setEnabled(true);
@@ -223,37 +254,30 @@ public class InputPanel extends Panel {
     }
 
     private boolean validTable() {
-
+        // validates (1) null and (2) max => alloc
         for (int row = 0; row < processTable.getRowCount(); row++) {
-            for (int col = 0; col < processTable.getColumnCount(); col++) {
-                if (allocationTable.getValueAt(row, col) == null || allocationTable.toString().trim().isEmpty() || maxTable.getValueAt(row, col) == null || maxTable.toString().trim().isEmpty()) {
+            for (int col = 0; col < allocationTableModel.getColumnCount(); col++) {
+                if (allocationTableModel.getValueAt(row, col) == null || allocationTableModel.toString().trim().isEmpty() || maxTableModel.getValueAt(row, col) == null || maxTableModel.toString().trim().isEmpty() || availableTableModel.getValueAt(0, col) == null || availableTableModel.toString().trim().isEmpty() || requestResourceTableModel.getValueAt(0, col) == null || requestResourceTableModel.toString().trim().isEmpty()) {
                     return false;
-                }
-            }
-        }
-        for (int row = 0; row < availableTable.getRowCount(); row++) {
-            for (int col = 0; col < availableTable.getColumnCount(); col++) {
-                if (availableTable.getValueAt(row, col) == null || availableTable.toString().trim().isEmpty() || requestResourceTable.getValueAt(row, col) == null || requestResourceTable.toString().trim().isEmpty()) {
-                    return false;
+                } else if (allocationTableModel.getValueAt(row, col) != null || maxTableModel.getValueAt(row, col) != null ) {
+                    int alloc = Integer.parseInt(allocationTableModel.getValueAt(row, col).toString());
+                    int max = Integer.parseInt(maxTableModel.getValueAt(row, col).toString());
+                    if (alloc > max) {
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
-    private void run() {
-        BankersAlgorithm banker = new SafetyAlgorithm();
+    public BankersAlgorithm getBankers() {
+        BankersAlgorithm banker = new BankersAlgorithm();
         String processName;
 
         //get available and resource request
         int[] available = new int[Integer.parseInt(availableResourcesNumField.getText())];
         int[] request = new int[Integer.parseInt(availableResourcesNumField.getText())];
-        for (int i = 0; i < available.length; i++) {
-            available[i] = (int) availableTableModel.getValueAt(0, i);
-            request[i] = (int) requestResourceTableModel.getValueAt(0, i);
-        }
-        banker.setAvailableResources(available);
-        banker.setRequestResource(request);
 
         //get allocation and max
         for (int i = 0; i < allocationTableModel.getRowCount(); i++) {
@@ -261,15 +285,26 @@ public class InputPanel extends Panel {
             int[] max = new int[available.length];
             processName = (String) processTableModel.getValueAt(i, 0);
             for (int j = 0; j < allocation.length; j++) {
+                available[j] = (int) availableTableModel.getValueAt(0, j);
+                request[j] = (int) requestResourceTableModel.getValueAt(0, j);
                 allocation[j] = (int) allocationTableModel.getValueAt(i, j);
                 max[j] = (int) maxTableModel.getValueAt(i, j);
             }
             banker.setResourcesNumber(Integer.parseInt(processNumField.getText()));
             banker.add(new Process(processName, allocation, max));
         }
-        for (int i = 0; i < banker.getProcesses().size(); i++) {
-            System.out.println(banker.getProcesses().get(i).getProcessName());
-        }
+        banker.setAvailableResources(available);
+        banker.setRequestResource(request);
+        banker.calculateSafeSequence();
+        return banker;
+    }
+
+    public void resetTables() {
+        System.out.println("RESET");
+        allocationTableModel.reset();
+        maxTableModel.reset();
+        requestResourceTableModel.reset();
+        availableTableModel.reset();
     }
 
     public static void main(String[] args) {
@@ -290,6 +325,30 @@ public class InputPanel extends Panel {
         }
     }
 
+    public CustomTableModel getAllocationTableModel() {
+        return allocationTableModel;
+    }
+
+    public CustomTableModel getMaxTableModel() {
+        return maxTableModel;
+    }
+
+    public CustomTableModel getAvailableTableModel() {
+        return availableTableModel;
+    }
+
+    public CustomTableModel getRequestResourceTableModel() {
+        return requestResourceTableModel;
+    }
+
+    public JTextField getProcessNumField() {
+        return processNumField;
+    }
+
+    public JTextField getAvailableResourcesNumField() {
+        return availableResourcesNumField;
+    }
+
     public ImageButton getMusicOnButton() {
         return musicOnButton;
     }
@@ -302,6 +361,10 @@ public class InputPanel extends Panel {
 
     public ImageButton getRunButton() {
         return runButton;
+    }
+
+    public ImageButton getRandomButton() {
+        return randomButton;
     }
 }
 

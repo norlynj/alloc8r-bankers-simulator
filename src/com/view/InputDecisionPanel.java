@@ -5,15 +5,19 @@ import view.component.ImageButton;
 import view.component.Panel;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class InputDecisionPanel extends Panel{
     private ImageButton fromATextFileButton, userDefinedButton, randomButton;
     private ImageButton musicOnButton, musicOffButton, homeButton;
+
     public InputDecisionPanel() {
         super("bg/input-choice-panel.png");
-
-
 
         fromATextFileButton = new ImageButton("buttons/fromtext.png");
         userDefinedButton = new ImageButton("buttons/user.png");
@@ -58,6 +62,95 @@ public class InputDecisionPanel extends Panel{
         musicOnButton.hover("buttons/volume-off-hover.png", "buttons/volume-on.png");
         musicOffButton.hover("buttons/volume-on-hover.png", "buttons/volume-off.png");
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
+    }
+
+    public boolean processInput(InputPanel inputPanel) {
+        String resourcePath = "/resources/text/";
+        URL resourceUrl = InputDecisionPanel.class.getResource(resourcePath);
+
+        // Convert the URL to a file object
+        assert resourceUrl != null;
+        File resourceFile = new File(resourceUrl.getPath());
+        JFileChooser fileChooser = new JFileChooser(resourceFile);
+        fileChooser.setDialogTitle("Select text file");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text files", "txt"));
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile != null) {
+                // Read the input file and store the values in a 2-dimensional array
+                String inputFileName = fileChooser.getSelectedFile().getPath();
+
+                try (BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
+                    String line;
+                    int lineNum = 1;
+                    int processNum = 0;
+                    int resourcesNum = 0;
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().isEmpty()) {
+                            continue;
+                        }
+                        if (lineNum == 1) {
+                            processNum = Integer.parseInt(line.split(": ")[1]);
+                            inputPanel.getProcessNumField().setText(String.valueOf(processNum));
+                            lineNum++;
+                            continue;
+                        } else if (lineNum == 2) {
+                            resourcesNum = Integer.parseInt(line.split(": ")[1]);
+                            inputPanel.getAvailableResourcesNumField().setText(String.valueOf(resourcesNum));
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[allocation]")) {
+                            for (int i = 0; i < processNum; i++) {
+                                String[] values = br.readLine().split(",");
+                                for (int j = 0; j < resourcesNum; j++) {
+                                    inputPanel.getAllocationTableModel().setValueAt(Integer.parseInt(values[j]), i, j);
+                                }
+                            }
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[max]")) {
+                            for (int i = 0; i < processNum; i++) {
+                                String[] values = br.readLine().split(",");
+                                for (int j = 0; j < resourcesNum; j++) {
+                                    inputPanel.getMaxTableModel().setValueAt(Integer.parseInt(values[j]), i, j);
+                                }
+                            }
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[available]")) {
+                            // Read values for available table
+                            String[] values = br.readLine().split(",");
+                            for (int i = 0; i < resourcesNum; i++) {
+                                inputPanel.getAvailableTableModel().setValueAt(Integer.parseInt(values[i]), 0, i);
+                            }
+                            lineNum++;
+                            continue;
+                        } else if (line.startsWith("[request]")) {
+                            // Read values for request table
+                            String[] values = br.readLine().split(",");
+                            for (int i = 0; i < resourcesNum; i++) {
+                                inputPanel.getRequestResourceTableModel().setValueAt(Integer.parseInt(values[i]), 0, i);
+                            }
+                            lineNum++;
+                            continue;
+                        }
+                    }
+                } catch (IOException | ArrayIndexOutOfBoundsException e) {
+                    JOptionPane.showMessageDialog(null, "Error reading file. Please make sure you followed the right formatting");
+                    return false;
+                }
+            }
+            if (!inputPanel.getRunButton().isEnabled()) {
+                JOptionPane.showMessageDialog(null, "Error reading file. Please make sure\nyou followed the right formatting or that alloc < max ");
+                return false;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No file selected");
+            return false;
+        }
+        return true;
     }
 
     public void musicClick() {

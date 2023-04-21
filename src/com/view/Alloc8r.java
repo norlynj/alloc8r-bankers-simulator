@@ -63,9 +63,21 @@ public class Alloc8r {
     }
 
     public void listenToInputDecision(){
-        inputDecisionPanel.getFromATextFileButton();
-        inputDecisionPanel.getUserDefinedButton().addActionListener(e -> cardLayout.show(contentPane, "inputPanel" ));
-        inputDecisionPanel.getRandomButton();
+        inputDecisionPanel.getFromATextFileButton().addActionListener(e -> {
+            if (inputDecisionPanel.processInput(inputPanel)) {
+                cardLayout.show(contentPane, "inputPanel");
+                inputPanel.getRandomButton().setVisible(false);
+            }
+        });
+        inputDecisionPanel.getUserDefinedButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "inputPanel" );
+            inputPanel.getRandomButton().setVisible(false);
+        });
+        inputDecisionPanel.getRandomButton().addActionListener(e -> {
+            cardLayout.show(contentPane, "inputPanel" );
+            inputPanel.generateRandomData();
+            inputPanel.getRandomButton().setVisible(true);
+        });
         inputDecisionPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputDecisionPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
@@ -82,6 +94,8 @@ public class Alloc8r {
         outputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         outputPanel.getHomeButton().addActionListener(e -> {
             cardLayout.show(contentPane, "menuPanel");
+            inputPanel.resetTables();
+            outputPanel.resetTables();
         });
     }
 
@@ -90,6 +104,8 @@ public class Alloc8r {
         inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
         inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
         inputPanel.getRunButton().addActionListener(e -> {
+            outputPanel.setBankers(inputPanel.getBankers());
+            outputPanel.populateTable();
             cardLayout.show(contentPane, "outputPanel");
         });
     }

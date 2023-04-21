@@ -14,6 +14,14 @@ public class CustomTableModel extends DefaultTableModel {
         super(columnNames, rowCount);
     }
 
+    public void reset() {
+        for (int i = 0; i < getRowCount(); i++) {
+            for (int j = 0; j < getColumnCount(); j++) {
+                setValueAt(null, i, j);
+            }
+        }
+    }
+
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return Integer.class;
@@ -42,7 +50,7 @@ public class CustomTableModel extends DefaultTableModel {
         try {
             int intValue = Integer.parseInt(value.toString());
 
-            if (intValue < 1 || intValue > 30) {
+            if (intValue < 0 || intValue > 30) {
                 fireTableCellUpdated(row, column);
                 return;
             }
