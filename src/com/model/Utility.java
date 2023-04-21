@@ -22,4 +22,12 @@ public class Utility {
                 .replace(",", ", ");
         return result;
     }
+
+    public static String arrayToString(int[] a) {
+        String result = Arrays.toString(a)
+                .replace("[", "")
+                .replace("]", "")
+                .replace(",", ", ");
+        return result;
+    }
 }

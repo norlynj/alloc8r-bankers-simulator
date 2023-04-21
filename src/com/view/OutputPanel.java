@@ -113,7 +113,7 @@ public class OutputPanel extends Panel{
 
         addTable(processTotal, resourcesTotal);
 
-        requestResourceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
+        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
 
         if (banker.getSafeSequence() == null){
             safeSequenceLabel.setText("No safe sequence exists");
