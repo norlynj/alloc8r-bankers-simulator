@@ -224,7 +224,7 @@ public class InputPanel extends Panel {
     }
 
     private boolean validTable() {
-
+        // validates (1) null and (2) max => alloc
         for (int row = 0; row < processTable.getRowCount(); row++) {
             for (int col = 0; col < allocationTableModel.getColumnCount(); col++) {
                 if (allocationTableModel.getValueAt(row, col) == null || allocationTableModel.toString().trim().isEmpty() || maxTableModel.getValueAt(row, col) == null || maxTableModel.toString().trim().isEmpty() || availableTableModel.getValueAt(0, col) == null || availableTableModel.toString().trim().isEmpty() || requestResourceTableModel.getValueAt(0, col) == null || requestResourceTableModel.toString().trim().isEmpty()) {
