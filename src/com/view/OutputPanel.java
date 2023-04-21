@@ -12,6 +12,8 @@ import view.component.CustomTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 
 public class OutputPanel extends Panel{
@@ -22,6 +24,9 @@ public class OutputPanel extends Panel{
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
     private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
     private BankersAlgorithm banker;
+    Timer timer;
+    private int currentRow = 0;
+    private boolean repaintInProgress;
 
     public OutputPanel() {
         super("bg/output-panel.png");
@@ -162,43 +167,69 @@ public class OutputPanel extends Panel{
         availableTable.setCenter();
         needTable.setCenter();
 
-        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
-
-        if (banker.getSafeSequence() == null){
-            safeSequenceLabel.setText("No safe sequence exists");
-        } else {
-            safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
-        }
-
-        for (int i = 0; i < processTotal; i++) {
-            Process process = banker.getProcesses().get(i);
-            processTableModel.setValueAt(process.getProcessName(), i, 0);
-            for (int j = 0; j < process.getAllocation().length; j++) {
-                allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
-                maxTableModel.setValueAt(process.getMaximumClaim()[j],i, j);
-                needTableModel.setValueAt(process.getNeed()[j],i, j);
-                availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
-            }
-        }
+        repaintTables();
     }
 
     private void simulateSafety() {
+        resetTables();
         banker.calculateSafeSequence();
+        timer = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!repaintInProgress) {
+                    repaintInProgress = true;
+                    simulateProcess(e);
+                    highlightRows();
+                }
+            }
+        });
+        timer.start();
+        currentRow = 0;
+
     }
 
     private void simulateRequest() {
         banker.requestResource();
+        repaintTables();
+    }
 
-        //repaint table
+    private void highlightRows() {
+        needTable.clearSelection();
+        needTable.addRowSelectionInterval(currentRow-1, currentRow-1);
+    }
+
+    private void repaintTables() {
         for (int i = 0; i < banker.getProcesses().size(); i++) {
             Process process = banker.getProcesses().get(i);
             processTableModel.setValueAt(process.getProcessName(), i, 0);
             for (int j = 0; j < process.getAllocation().length; j++) {
                 allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
-                needTableModel.setValueAt(process.getNeed()[j],i, j);
+                maxTableModel.setValueAt(process.getMaximumClaim()[j],i, j);
+                needTableModel.setValueAt(process.getNeed()[j], i, j);
                 availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
             }
         }
+        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
+    }
+
+    private void simulateProcess(ActionEvent e) {
+        System.out.print(currentRow);
+        if (currentRow < banker.getProcesses().size()) {
+            Process process = banker.getProcesses().get(currentRow);
+            processTableModel.setValueAt(process.getProcessName(), currentRow, 0);
+            for (int j = 0; j < process.getAllocation().length; j++) {
+                allocationTableModel.setValueAt(process.getAllocation()[j], currentRow, j);
+                maxTableModel.setValueAt(process.getMaximumClaim()[j], currentRow, j);
+                needTableModel.setValueAt(process.getNeed()[j], currentRow, j);
+                availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
+            }
+            requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
+            currentRow++;
+        } else {
+            // Stop the timer when all rows have been updated
+            ((Timer) e.getSource()).stop();
+        }
+        repaintInProgress = false;
     }
 
     public void musicClick() {
