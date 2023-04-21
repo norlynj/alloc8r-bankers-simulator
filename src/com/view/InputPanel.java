@@ -229,6 +229,12 @@ public class InputPanel extends Panel {
             for (int col = 0; col < allocationTableModel.getColumnCount(); col++) {
                 if (allocationTableModel.getValueAt(row, col) == null || allocationTableModel.toString().trim().isEmpty() || maxTableModel.getValueAt(row, col) == null || maxTableModel.toString().trim().isEmpty() || availableTableModel.getValueAt(0, col) == null || availableTableModel.toString().trim().isEmpty() || requestResourceTableModel.getValueAt(0, col) == null || requestResourceTableModel.toString().trim().isEmpty()) {
                     return false;
+                } else if (allocationTableModel.getValueAt(row, col) != null || maxTableModel.getValueAt(row, col) != null ) {
+                    int alloc = Integer.parseInt(allocationTableModel.getValueAt(row, col).toString());
+                    int max = Integer.parseInt(maxTableModel.getValueAt(row, col).toString());
+                    if (alloc > max) {
+                        return false;
+                    }
                 }
             }
         }

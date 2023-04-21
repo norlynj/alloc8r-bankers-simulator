@@ -142,8 +142,8 @@ public class InputDecisionPanel extends Panel{
                     return false;
                 }
             }
-            if (selectedFile.length() == 0 || !inputPanel.getRunButton().isEnabled()) {
-                JOptionPane.showMessageDialog(null, "Error reading file. Please make sure you followed the right formatting.");
+            if (!inputPanel.getRunButton().isEnabled()) {
+                JOptionPane.showMessageDialog(null, "Error reading file. Please make sure\nyou followed the right formatting or that alloc < max ");
                 return false;
             }
         } else {
