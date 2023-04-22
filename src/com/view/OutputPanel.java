@@ -24,7 +24,7 @@ public class OutputPanel extends Panel{
     private CustomTableModel processTableModel, allocationTableModel, maxTableModel, availableTableModel, needTableModel;
     private CustomTable processTable, allocationTable, maxTable, availableTable, needTable;
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
-    private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
+    private Label stepsLabel, requestResourceLabel, safeSequenceLabel, stepDescriptionLabel;
     private BankersAlgorithm banker;
     Timer timer1, timer2, timer3;
     private int currentRow = 0, stepsCount = 0;
@@ -68,11 +68,14 @@ public class OutputPanel extends Panel{
 
         // Labels
         stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepDescriptionLabel = new Label(("Calculating need"), true, SwingConstants.CENTER);
         stepsLabel.setForeground(Color.white);
+        stepDescriptionLabel.setForeground(Color.black);
         requestResourceLabel = new Label("1, 2, 3");
         safeSequenceLabel = new Label("", false, SwingConstants.CENTER);
 
         stepsLabel.setBounds(144, 467, 444, 134);
+        stepDescriptionLabel.setBounds(133, 427, 462, 27);
         requestResourceLabel.setBounds(867, 603, 94, 21);
         safeSequenceLabel.setBounds(234, 720, 641, 34);
 
@@ -87,6 +90,7 @@ public class OutputPanel extends Panel{
         this.add(needTablePane);
         this.add(homeButton);
         this.add(stepsLabel);
+        this.add(stepDescriptionLabel);
         this.add(requestResourceLabel);
         this.add(safeSequenceLabel);
         this.add(safetyAlgoButton);
@@ -115,7 +119,7 @@ public class OutputPanel extends Panel{
         availableTablePane = availableTable.createTablePane(884, 171, 185, 235);
 
         // Labels
-        stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepsLabel = new Label(("The step by step execution is shown here."), true, SwingConstants.LEFT);
         stepsLabel.setForeground(Color.white);
         requestResourceLabel = new Label("1, 2, 3");
         safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
@@ -197,6 +201,7 @@ public class OutputPanel extends Panel{
             public void actionPerformed(ActionEvent e) {
                 if (currentRow < banker.getProcesses().size()) {
                     Process process = banker.getProcesses().get(currentRow);
+                    stepDescriptionLabel.setText("Step 1: Calculating the need matrix");
                     stepsLabel.setText("Need = Max - Allocation<br>" + Arrays.toString(process.getMaximumClaim()) + " - " + Arrays.toString(process.getAllocation()) + " = " + Arrays.toString(process.getNeed()));
                     simulateProcess(currentRow);
                     currentRow++;
@@ -225,6 +230,7 @@ public class OutputPanel extends Panel{
                 ArrayList<Step> steps = banker.getSafeSequenceSteps();
                 if (currentRow < banker.getProcesses().size() && banker.getSafeSequenceSteps() != null && stepsCount < steps.size()) {
                     // simulate process i
+                    stepDescriptionLabel.setText("Step 2: Determining the safe sequence");
                     stepsLabel.setText(steps.get(stepsCount).getText());
                     highlightRows(steps.get(stepsCount).getProcessNumber());
                     safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
@@ -268,7 +274,7 @@ public class OutputPanel extends Panel{
                 if (currentRow < banker.getProcesses().size() && stepsCount < banker.getRequestSequenceSteps().size()) {
                     Step step = banker.getRequestSequenceSteps().get(stepsCount);
 
-                    // simulate process i
+                    stepDescriptionLabel.setText("Step 1: Checking if resource can be granted.");
                     stepsLabel.setText(step.getText());
 
                     if (step.isModifyState()) {
