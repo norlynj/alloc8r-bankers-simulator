@@ -2,6 +2,7 @@ package view;
 
 import model.BankersAlgorithm;
 import model.Process;
+import model.Step;
 import model.Utility;
 import view.component.*;
 import view.component.Frame;
@@ -12,6 +13,9 @@ import view.component.CustomTableModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class OutputPanel extends Panel{
@@ -20,8 +24,11 @@ public class OutputPanel extends Panel{
     private CustomTableModel processTableModel, allocationTableModel, maxTableModel, availableTableModel, needTableModel;
     private CustomTable processTable, allocationTable, maxTable, availableTable, needTable;
     private JScrollPane processTablePane, allocationTablePane, maxTablePane, availableTablePane, needTablePane;
-    private Label stepsLabel, requestResourceLabel, safeSequenceLabel;
+    private Label stepsLabel, requestResourceLabel, safeSequenceLabel, stepDescriptionLabel;
     private BankersAlgorithm banker;
+    Timer timer1, timer2, timer3;
+    private int currentRow = 0, stepsCount = 0;
+    private boolean repaintInProgress;
 
     public OutputPanel() {
         super("bg/output-panel.png");
@@ -61,11 +68,14 @@ public class OutputPanel extends Panel{
 
         // Labels
         stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepDescriptionLabel = new Label(("Calculating need"), true, SwingConstants.CENTER);
         stepsLabel.setForeground(Color.white);
+        stepDescriptionLabel.setForeground(Color.black);
         requestResourceLabel = new Label("1, 2, 3");
-        safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
+        safeSequenceLabel = new Label("", false, SwingConstants.CENTER);
 
         stepsLabel.setBounds(144, 467, 444, 134);
+        stepDescriptionLabel.setBounds(133, 427, 462, 27);
         requestResourceLabel.setBounds(867, 603, 94, 21);
         safeSequenceLabel.setBounds(234, 720, 641, 34);
 
@@ -80,6 +90,7 @@ public class OutputPanel extends Panel{
         this.add(needTablePane);
         this.add(homeButton);
         this.add(stepsLabel);
+        this.add(stepDescriptionLabel);
         this.add(requestResourceLabel);
         this.add(safeSequenceLabel);
         this.add(safetyAlgoButton);
@@ -108,7 +119,7 @@ public class OutputPanel extends Panel{
         availableTablePane = availableTable.createTablePane(884, 171, 185, 235);
 
         // Labels
-        stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
+        stepsLabel = new Label(("The step by step execution is shown here."), true, SwingConstants.LEFT);
         stepsLabel.setForeground(Color.white);
         requestResourceLabel = new Label("1, 2, 3");
         safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
@@ -135,8 +146,15 @@ public class OutputPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
         safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
         resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
-        safetyAlgoButton.addActionListener(e -> simulateSafety());
-        resourceRequestButton.addActionListener(e -> simulateRequest());
+        safetyAlgoButton.addActionListener(e -> {
+            safetyAlgoButton.hover("buttons/safety-algo.png", "buttons/safety-algo-hover.png");
+            simulateSafety();
+
+        });
+        resourceRequestButton.addActionListener(e -> {
+            resourceRequestButton.hover("buttons/resource-req.png", "buttons/resource-req-hover.png");
+            simulateRequest();
+        });
     }
 
     public void setBankers(BankersAlgorithm banker) {
@@ -162,43 +180,164 @@ public class OutputPanel extends Panel{
         availableTable.setCenter();
         needTable.setCenter();
 
-        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
-
-        if (banker.getSafeSequence() == null){
-            safeSequenceLabel.setText("No safe sequence exists");
-        } else {
-            safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
-        }
-
-        for (int i = 0; i < processTotal; i++) {
-            Process process = banker.getProcesses().get(i);
-            processTableModel.setValueAt(process.getProcessName(), i, 0);
-            for (int j = 0; j < process.getAllocation().length; j++) {
-                allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
-                maxTableModel.setValueAt(process.getMaximumClaim()[j],i, j);
-                needTableModel.setValueAt(process.getNeed()[j],i, j);
-                availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
-            }
-        }
+        repaintTables();
     }
 
     private void simulateSafety() {
+        resetTables();
         banker.calculateSafeSequence();
+        currentRow = 0;
+        startNeedCalculationTimer();
+
+    }
+
+    private void startNeedCalculationTimer() {
+        if (timer1 != null && timer1.isRunning()) {
+            timer1.stop();
+        }
+
+        timer1 = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentRow < banker.getProcesses().size()) {
+                    Process process = banker.getProcesses().get(currentRow);
+                    stepDescriptionLabel.setText("Step 1: Calculating the need matrix");
+                    stepsLabel.setText("Need = Max - Allocation<br>" + Arrays.toString(process.getMaximumClaim()) + " - " + Arrays.toString(process.getAllocation()) + " = " + Arrays.toString(process.getNeed()));
+                    simulateProcess(currentRow);
+                    currentRow++;
+
+                    //disallow simulating both algorithms
+                    resourceRequestButton.setEnabled(false);
+                } else {
+                    timer1.stop();
+                    startSafetyTimer();
+                    currentRow = 0;
+                }
+            }
+        });
+        timer1.start();
+
+    }
+
+    private void startSafetyTimer() {
+        if (timer2 != null && timer2.isRunning()) {
+            timer2.stop();
+        }
+
+        timer2 = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Step> steps = banker.getSafeSequenceSteps();
+                if (currentRow < banker.getProcesses().size() && banker.getSafeSequenceSteps() != null && stepsCount < steps.size()) {
+                    // simulate process i
+                    stepDescriptionLabel.setText("Step 2: Determining the safe sequence");
+                    stepsLabel.setText(steps.get(stepsCount).getText());
+                    highlightRows(steps.get(stepsCount).getProcessNumber());
+                    safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
+                    currentRow++;
+                    stepsCount++;
+                    if ((currentRow) == banker.getProcesses().size()) {
+                        currentRow = 0;
+                    }
+                } else {
+                    timer2.stop();
+                    currentRow = 0;
+                    stepsCount = 0;
+                    safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
+                    resourceRequestButton.setEnabled(true);
+                    if (banker.getSafeSequence() == null){
+                        safeSequenceLabel.setText("No safe sequence exists");
+                        resourceRequestButton.setEnabled(false);
+                    } else {
+                        safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
+                    }
+                }
+            }
+        });
+        timer2.start();
     }
 
     private void simulateRequest() {
+        repaintTables();
         banker.requestResource();
+        startRequestTimer();
+    }
 
-        //repaint table
+    private void startRequestTimer() {
+        currentRow = 0;
+        final boolean[] modifyState = {false};
+        if (timer3 != null && timer3.isRunning()) {
+            timer3.stop();
+        }
+        timer3 = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentRow < banker.getProcesses().size() && stepsCount < banker.getRequestSequenceSteps().size()) {
+                    Step step = banker.getRequestSequenceSteps().get(stepsCount);
+
+                    stepDescriptionLabel.setText("Step 1: Checking if resource can be granted.");
+                    stepsLabel.setText(step.getText());
+
+                    if (step.isModifyState()) {
+                        banker.modifyStateFromRequest(step.getProcessNumber());
+                        repaintTables();
+                        modifyState[0] = true;
+                        System.out.println("granted");
+                    }
+
+                    highlightRows(currentRow);
+                    currentRow++;
+                    stepsCount++;
+                    if ((currentRow) == banker.getProcesses().size()) {
+                        currentRow = 0;
+                    }
+                    safetyAlgoButton.setEnabled(false);
+                } else {
+                    timer3.stop();
+                    if (modifyState[0]) {
+                        startSafetyTimer();
+                    }
+                    currentRow = 0;
+                    stepsCount = 0;
+                    safeSequenceLabel.setText("");
+                    resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
+                    safetyAlgoButton.setEnabled(true);
+                }
+            }
+        });
+        timer3.start();
+    }
+
+    private void highlightRows(int currentRow) {
+        needTable.clearSelection();
+        needTable.addRowSelectionInterval(currentRow, currentRow);
+    }
+
+    private void repaintTables() {
         for (int i = 0; i < banker.getProcesses().size(); i++) {
             Process process = banker.getProcesses().get(i);
             processTableModel.setValueAt(process.getProcessName(), i, 0);
             for (int j = 0; j < process.getAllocation().length; j++) {
                 allocationTableModel.setValueAt(process.getAllocation()[j],i, j);
-                needTableModel.setValueAt(process.getNeed()[j],i, j);
+                maxTableModel.setValueAt(process.getMaximumClaim()[j],i, j);
+                needTableModel.setValueAt(process.getNeed()[j], i, j);
                 availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
             }
         }
+        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
+    }
+
+    private void simulateProcess(int currentRow) {
+        highlightRows(currentRow);
+        Process process = banker.getProcesses().get(currentRow);
+        processTableModel.setValueAt(process.getProcessName(), currentRow, 0);
+        for (int j = 0; j < process.getAllocation().length; j++) {
+            allocationTableModel.setValueAt(process.getAllocation()[j], currentRow, j);
+            maxTableModel.setValueAt(process.getMaximumClaim()[j], currentRow, j);
+            needTableModel.setValueAt(process.getNeed()[j], currentRow, j);
+            availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
+        }
+        requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
     }
 
     public void musicClick() {
@@ -216,6 +355,10 @@ public class OutputPanel extends Panel{
         maxTableModel.reset();
         needTableModel.reset();
         availableTableModel.reset();
+        safeSequenceLabel.setText("");
+        requestResourceLabel.setText("");
+        safetyAlgoButton.setEnabled(true);
+        resourceRequestButton.setEnabled(true);
     }
 
     public static void main(String[] args) {
