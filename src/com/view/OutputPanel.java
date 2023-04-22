@@ -265,6 +265,7 @@ public class OutputPanel extends Panel{
 
     private void startRequestTimer() {
         currentRow = 0;
+        final boolean[] modifyState = {false};
         if (timer3 != null && timer3.isRunning()) {
             timer3.stop();
         }
@@ -280,6 +281,8 @@ public class OutputPanel extends Panel{
                     if (step.isModifyState()) {
                         banker.modifyStateFromRequest(step.getProcessNumber());
                         repaintTables();
+                        modifyState[0] = true;
+                        System.out.println("granted");
                     }
 
                     highlightRows(currentRow);
@@ -291,7 +294,9 @@ public class OutputPanel extends Panel{
                     safetyAlgoButton.setEnabled(false);
                 } else {
                     timer3.stop();
-                    startSafetyTimer();
+                    if (modifyState[0]) {
+                        startSafetyTimer();
+                    }
                     currentRow = 0;
                     stepsCount = 0;
                     safeSequenceLabel.setText("");

@@ -149,7 +149,7 @@ public class BankersAlgorithm {
         processText.append(", Request ≤ Work :");
         for (int i = 0; i < availableResources.length; i++) {
             if (requestResource[i] > availableResources[i]) {
-                processText.append("<br>" + Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is false.<br>Request can't be granted.");
+                processText.append("<br>" + Arrays.toString(requestResource) + " ≤ " + Arrays.toString(availableResources) + " is false.<br>Request can't be granted.");
                 requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process));
                 return false; // Request cannot be granted.
             }
