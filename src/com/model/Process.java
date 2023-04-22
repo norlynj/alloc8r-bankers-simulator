@@ -37,12 +37,4 @@ public class Process {
     public int[] getNeed() {
         return need;
     }
-
-    public void setStepText(String stepText) {
-        this.stepText = stepText;
-    }
-
-    public String getStepText() {
-        return stepText;
-    }
 }

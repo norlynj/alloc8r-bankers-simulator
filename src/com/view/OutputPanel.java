@@ -2,6 +2,7 @@ package view;
 
 import model.BankersAlgorithm;
 import model.Process;
+import model.Step;
 import model.Utility;
 import view.component.*;
 import view.component.Frame;
@@ -14,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class OutputPanel extends Panel{
@@ -68,7 +70,7 @@ public class OutputPanel extends Panel{
         stepsLabel = new Label(("For Process 1<br>Finish[1] is true and Need < Work so P1 must be kept in the safe sequence<br>Work = Work + Allocation = 3 3 2 + 2 0 0 <br>Work = 5 3 2"), true, SwingConstants.LEFT);
         stepsLabel.setForeground(Color.white);
         requestResourceLabel = new Label("1, 2, 3");
-        safeSequenceLabel = new Label("P1, P3, P4, P0, P2", false, SwingConstants.CENTER);
+        safeSequenceLabel = new Label("", false, SwingConstants.CENTER);
 
         stepsLabel.setBounds(144, 467, 444, 134);
         requestResourceLabel.setBounds(867, 603, 94, 21);
@@ -174,10 +176,11 @@ public class OutputPanel extends Panel{
         resetTables();
         banker.calculateSafeSequence();
         currentRow = 0;
-        startTimer();
+        startSafetyTimer();
+
     }
 
-    private void startTimer() {
+    private void startSafetyTimer() {
         if (timer1 != null && timer1.isRunning()) {
             timer1.stop();
         }
@@ -187,16 +190,13 @@ public class OutputPanel extends Panel{
             public void actionPerformed(ActionEvent e) {
                 if (currentRow < banker.getProcesses().size()) {
                     Process process = banker.getProcesses().get(currentRow);
-                    System.out.println(currentRow);
-                    // simulate process i
                     stepsLabel.setText("Need = Max - Allocation<br>" + Arrays.toString(process.getMaximumClaim()) + " - " + Arrays.toString(process.getAllocation()) + " = " + Arrays.toString(process.getNeed()));
                     simulateProcess(currentRow);
-                    // highlight rows after each process is simulated
                     currentRow++;
                 } else {
                     timer1.stop();
                     currentRow = 0;
-                    timer2.start(); // start timer2 after timer1 has finished
+                    timer2.start();
                 }
             }
         });
@@ -208,29 +208,63 @@ public class OutputPanel extends Panel{
         timer2 = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentRow < banker.getProcesses().size() && stepsCount < banker.getStepsText().size()) {
+                ArrayList<Step> steps = banker.getSafeSequenceSteps();
+                if (currentRow < banker.getProcesses().size() && stepsCount < steps.size()) {
                     // simulate process i
-                    stepsLabel.setText(banker.getStepsText().get(stepsCount));
-                    highlightRows(currentRow);
+                    stepsLabel.setText(steps.get(stepsCount).getText());
+                    highlightRows(steps.get(stepsCount).getProcessNumber());
+                    safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
+                    System.out.println(steps.get(stepsCount).getSafeSequence());
                     currentRow++;
                     stepsCount++;
-                    if ((currentRow) == banker.getProcesses().size() && stepsCount != banker.getStepsCount()) {
+                    if ((currentRow) == banker.getProcesses().size()) {
                         currentRow = 0;
                     }
                 } else {
                     timer2.stop();
                     currentRow = 0;
+                    stepsCount = 0;
+                    if (banker.getSafeSequence() == null){
+                        safeSequenceLabel.setText("No safe sequence exists");
+                    } else {
+                        safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
+                    }
                 }
             }
         });
 
         timer1.start();
-
     }
 
     private void simulateRequest() {
-        banker.requestResource();
         repaintTables();
+        banker.requestResource();
+        startRequestTimer();
+    }
+
+    private void startRequestTimer() {
+        currentRow = 0;
+        timer3 = new Timer(2000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentRow < banker.getProcesses().size() && stepsCount < banker.getRequestSequenceSteps().size()) {
+                    // simulate process i
+                    stepsLabel.setText(banker.getRequestSequenceSteps().get(stepsCount).getText());
+                    banker.modifyStateFromRequest(banker.getRequestSequenceSteps().get(stepsCount).getProcessNumber());
+                    repaintTables();
+                    highlightRows(currentRow);
+                    currentRow++;
+                    stepsCount++;
+                    if ((currentRow) == banker.getProcesses().size()) {
+                        currentRow = 0;
+                    }
+                } else {
+                    timer3.stop();
+                    currentRow = 0;
+                }
+            }
+        });
+        timer3.start();
     }
 
     private void highlightRows(int currentRow) {
@@ -265,10 +299,6 @@ public class OutputPanel extends Panel{
         requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
     }
 
-    private void simulateSafeSequence() {
-
-    }
-
     public void musicClick() {
         if (musicOffButton.isVisible()){
             musicOnButton.setVisible(true);
@@ -284,6 +314,8 @@ public class OutputPanel extends Panel{
         maxTableModel.reset();
         needTableModel.reset();
         availableTableModel.reset();
+        safeSequenceLabel.setText("");
+        requestResourceLabel.setText("");
     }
 
     public static void main(String[] args) {
