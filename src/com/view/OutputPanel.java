@@ -142,8 +142,15 @@ public class OutputPanel extends Panel{
         homeButton.hover("buttons/home-hover.png", "buttons/home.png");
         safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
         resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
-        safetyAlgoButton.addActionListener(e -> simulateSafety());
-        resourceRequestButton.addActionListener(e -> simulateRequest());
+        safetyAlgoButton.addActionListener(e -> {
+            safetyAlgoButton.hover("buttons/safety-algo.png", "buttons/safety-algo-hover.png");
+            simulateSafety();
+
+        });
+        resourceRequestButton.addActionListener(e -> {
+            resourceRequestButton.hover("buttons/resource-req.png", "buttons/resource-req-hover.png");
+            simulateRequest();
+        });
     }
 
     public void setBankers(BankersAlgorithm banker) {
@@ -176,11 +183,11 @@ public class OutputPanel extends Panel{
         resetTables();
         banker.calculateSafeSequence();
         currentRow = 0;
-        startSafetyTimer();
+        startNeedCalculationTimer();
 
     }
 
-    private void startSafetyTimer() {
+    private void startNeedCalculationTimer() {
         if (timer1 != null && timer1.isRunning()) {
             timer1.stop();
         }
@@ -193,14 +200,21 @@ public class OutputPanel extends Panel{
                     stepsLabel.setText("Need = Max - Allocation<br>" + Arrays.toString(process.getMaximumClaim()) + " - " + Arrays.toString(process.getAllocation()) + " = " + Arrays.toString(process.getNeed()));
                     simulateProcess(currentRow);
                     currentRow++;
+
+                    //disallow simulating both algorithms
+                    resourceRequestButton.setEnabled(false);
                 } else {
                     timer1.stop();
+                    startSafetyTimer();
                     currentRow = 0;
-                    timer2.start();
                 }
             }
         });
+        timer1.start();
 
+    }
+
+    private void startSafetyTimer() {
         if (timer2 != null && timer2.isRunning()) {
             timer2.stop();
         }
@@ -209,12 +223,11 @@ public class OutputPanel extends Panel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Step> steps = banker.getSafeSequenceSteps();
-                if (currentRow < banker.getProcesses().size() && stepsCount < steps.size()) {
+                if (currentRow < banker.getProcesses().size() && banker.getSafeSequenceSteps() != null && stepsCount < steps.size()) {
                     // simulate process i
                     stepsLabel.setText(steps.get(stepsCount).getText());
                     highlightRows(steps.get(stepsCount).getProcessNumber());
                     safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
-                    System.out.println(steps.get(stepsCount).getSafeSequence());
                     currentRow++;
                     stepsCount++;
                     if ((currentRow) == banker.getProcesses().size()) {
@@ -224,16 +237,18 @@ public class OutputPanel extends Panel{
                     timer2.stop();
                     currentRow = 0;
                     stepsCount = 0;
+                    safetyAlgoButton.hover("buttons/safety-algo-hover.png", "buttons/safety-algo.png");
+                    resourceRequestButton.setEnabled(true);
                     if (banker.getSafeSequence() == null){
                         safeSequenceLabel.setText("No safe sequence exists");
+                        resourceRequestButton.setEnabled(false);
                     } else {
                         safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
                     }
                 }
             }
         });
-
-        timer1.start();
+        timer2.start();
     }
 
     private void simulateRequest() {
@@ -244,23 +259,38 @@ public class OutputPanel extends Panel{
 
     private void startRequestTimer() {
         currentRow = 0;
+        if (timer3 != null && timer3.isRunning()) {
+            timer3.stop();
+        }
         timer3 = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentRow < banker.getProcesses().size() && stepsCount < banker.getRequestSequenceSteps().size()) {
+                    Step step = banker.getRequestSequenceSteps().get(stepsCount);
+
                     // simulate process i
-                    stepsLabel.setText(banker.getRequestSequenceSteps().get(stepsCount).getText());
-                    banker.modifyStateFromRequest(banker.getRequestSequenceSteps().get(stepsCount).getProcessNumber());
-                    repaintTables();
+                    stepsLabel.setText(step.getText());
+
+                    if (step.isModifyState()) {
+                        banker.modifyStateFromRequest(step.getProcessNumber());
+                        repaintTables();
+                    }
+
                     highlightRows(currentRow);
                     currentRow++;
                     stepsCount++;
                     if ((currentRow) == banker.getProcesses().size()) {
                         currentRow = 0;
                     }
+                    safetyAlgoButton.setEnabled(false);
                 } else {
                     timer3.stop();
+                    startSafetyTimer();
                     currentRow = 0;
+                    stepsCount = 0;
+                    safeSequenceLabel.setText("");
+                    resourceRequestButton.hover("buttons/resource-req-hover.png", "buttons/resource-req.png");
+                    safetyAlgoButton.setEnabled(true);
                 }
             }
         });
@@ -316,6 +346,8 @@ public class OutputPanel extends Panel{
         availableTableModel.reset();
         safeSequenceLabel.setText("");
         requestResourceLabel.setText("");
+        safetyAlgoButton.setEnabled(true);
+        resourceRequestButton.setEnabled(true);
     }
 
     public static void main(String[] args) {

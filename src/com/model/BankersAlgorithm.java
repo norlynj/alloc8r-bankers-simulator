@@ -103,7 +103,7 @@ public class BankersAlgorithm {
                     }
                     finishString = finishString.substring(0, finishString.length() - 1) + " ]";
                     processText.append(finishString);
-                    safeSequenceSteps.add(new Step(i, processText.toString(), process, currentSafeSequence));
+                    safeSequenceSteps.add(new Step(i, processText.toString(), process, false, currentSafeSequence));
                     processText.setLength(0);
                 }
 
@@ -149,7 +149,7 @@ public class BankersAlgorithm {
         processText.append(", Request ≤ Work :");
         for (int i = 0; i < availableResources.length; i++) {
             if (requestResource[i] > availableResources[i]) {
-                processText.append("<br>" + Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is false");
+                processText.append("<br>" + Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is false.<br>Request can't be granted.");
                 requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process));
                 return false; // Request cannot be granted.
             }
@@ -173,7 +173,7 @@ public class BankersAlgorithm {
         processText.append("<br>need = ").append(Arrays.toString(nextProcess.getNeed())).append(" + ").append(Arrays.toString(requestResource)).append(" = ").append(Arrays.toString(need));
 
         Step s = new Step(matchingProcessIndex, processText.toString(), process);
-        requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process));
+        requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process, true));
         s.setNewAllocation(alloc);
         s.setNewAvailable(available);
         s.setNewNeed(need);

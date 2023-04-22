@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public class Step {
     int processNumber;
+    boolean modifyState;
     String text;
     Process process;
     ArrayList safeSequence;
@@ -12,14 +13,19 @@ public class Step {
     int[] newAvailable, newAllocation, newNeed;
 
     public Step(int processNumber, String text, Process process) {
-        this(processNumber, text, process, null);
+        this(processNumber, text, process, false, null);
     }
 
-    public Step(int processNumber, String text, Process process, ArrayList safeSequence) {
+    public Step(int processNumber, String text, Process process, boolean modifyState) {
+        this(processNumber, text, process, modifyState, null);
+    }
+
+    public Step(int processNumber, String text, Process process, boolean modifyState, ArrayList safeSequence) {
         this.processNumber = processNumber;
         this.text = text;
         this.process = process;
         this.safeSequence = safeSequence;
+        this.modifyState = modifyState;
     }
 
     public int getProcessNumber() {
@@ -54,15 +60,7 @@ public class Step {
         this.newNeed = newNeed;
     }
 
-    public int[] getNewAvailable() {
-        return newAvailable;
-    }
-
-    public int[] getNewAllocation() {
-        return newAllocation;
-    }
-
-    public int[] getNewNeed() {
-        return newNeed;
+    public boolean isModifyState() {
+        return modifyState;
     }
 }
