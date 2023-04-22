@@ -1,5 +1,7 @@
 package model;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +13,8 @@ public class BankersAlgorithm {
     private int[] requestResource;
 
     private String[] safeSequence;
+    private int stepsCount;
+    private ArrayList<String> stepsText;
 
 
 
@@ -56,6 +60,8 @@ public class BankersAlgorithm {
         int numberOfResources = availableResources.length;
         int numberOfProcesses = processes.size();
 
+        stepsText = new ArrayList<>();
+
         // Initialize the visited and safeSequence arrays to default values.
         boolean[] visited = new boolean[numberOfProcesses];
         int[] safeSequence = new int[numberOfProcesses];
@@ -63,18 +69,18 @@ public class BankersAlgorithm {
 
         // Initialize the work array to the available resources.
         int[] work = Arrays.copyOf(availableResources, numberOfResources);
-
         while (count < numberOfProcesses) {
             boolean flag = false;
             for (int i = 0; i < numberOfProcesses; i++) {
+                StringBuilder processText = new StringBuilder();
                 Process process = processes.get(i);
 
                 if (!visited[i]) {
-                    System.out.println("\nFor Process " + i);
+                    processText.append("For Process " + i);
                     int j;
                     for (j = 0; j < numberOfResources; j++) {
                         if (process.getNeed()[j] > work[j]) {
-                            System.out.println("     Finish["+i+"] is false and Need > Work so P"+i + " must wait.");
+                            processText.append("     <br>Finish["+i+"] is false and Need > Work so P"+i + " must wait.");
                             break;
                         }
                     }
@@ -83,21 +89,23 @@ public class BankersAlgorithm {
                         safeSequence[count++] = i;
                         visited[i] = true;
                         flag = true;
-                        System.out.print("     Finish["+i+"] is true and Need <= Work so P"+i + " must be kept in the safe sequence.\n     Work = Work + Allocation =  ");
+                        processText.append("     <br>Finish["+i+"] is true and Need <= Work so P"+i + " must be kept in the safe sequence.<br>     Work = Work + Allocation =  ");
 
                         for (j = 0; j < numberOfResources; j++) {
-                            System.out.print((work[j] + process.getAllocation()[j]) + ", ");
                             work[j] += process.getAllocation()[j];
                         }
                     }
                     // Create a string representation of the Finish array
-                    String finishString = "\n     Finish = [";
+                    String finishString = "<br>     Finish = [";
                     for (int k = 0; k < numberOfProcesses; k++) {
                         finishString += " " + visited[k] + " |";
                     }
                     finishString = finishString.substring(0, finishString.length() - 1) + " ]";
-                    System.out.println(finishString);
+                    processText.append(finishString);
+                    stepsText.add(processText.toString());
+                    processText.setLength(0);
                 }
+
             }
             if (!flag) {
                 break;
@@ -111,7 +119,7 @@ public class BankersAlgorithm {
             String[] ss = new String[numberOfProcesses];
             System.out.println("Following is the SAFE Sequence");
             for (int i = 0; i < numberOfProcesses; i++) {
-                System.out.print("P" + safeSequence[i]);
+                System.out.println("P" + safeSequence[i]);
                 ss[i] = ("P" + safeSequence[i]);
                 if (i != numberOfProcesses - 1)
                     System.out.print(" -> ");
@@ -159,4 +167,11 @@ public class BankersAlgorithm {
         return true;
     }
 
+    public int getStepsCount() {
+        return stepsCount;
+    }
+
+    public ArrayList<String> getStepsText() {
+        return stepsText;
+    }
 }

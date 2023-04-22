@@ -33,7 +33,7 @@ public class CustomTableModel extends DefaultTableModel {
     @Override
     public Object getValueAt(int row, int col) {
         if (!editable && col == 0) {
-            return "P" + (row + 1);
+            return "P" + (row);
         }
         return super.getValueAt(row, col);
     }

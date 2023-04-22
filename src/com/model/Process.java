@@ -2,9 +2,11 @@ package model;
 
 public class Process {
     private String processName;
+    private String stepText;
     private int[] allocation;
     private int[] maximumClaim;
     private int[] need;
+    private int stepsCount;
 
     public Process(String processName, int[] allocation, int[] maximumClaim) {
         this.processName = processName;
@@ -36,11 +38,11 @@ public class Process {
         return need;
     }
 
-    public void setAllocation(int[] allocation) {
-        this.allocation = allocation;
+    public void setStepText(String stepText) {
+        this.stepText = stepText;
     }
 
-    public void setNeed(int[] need) {
-        this.need = need;
+    public String getStepText() {
+        return stepText;
     }
 }
