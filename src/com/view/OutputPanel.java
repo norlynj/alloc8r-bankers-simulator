@@ -229,11 +229,23 @@ public class OutputPanel extends Panel{
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Step> steps = banker.getSafeSequenceSteps();
                 if (currentRow < banker.getProcesses().size() && banker.getSafeSequenceSteps() != null && stepsCount < steps.size()) {
+                    // highlight allocation and available row
+                    needTable.clearSelection();
+                    allocationTable.clearSelection();
+                    availableTable.clearSelection();
+                    allocationTable.addRowSelectionInterval(steps.get(stepsCount).getProcessNumber(), steps.get(stepsCount).getProcessNumber());
+                    availableTable.addRowSelectionInterval(0, 0);
+
                     // simulate process i
                     stepDescriptionLabel.setText("Step 2: Determining the safe sequence");
                     stepsLabel.setText(steps.get(stepsCount).getText());
-                    highlightRows(steps.get(stepsCount).getProcessNumber());
                     safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
+
+                    // Update the new available
+                    for (int i = 0; i < steps.get(stepsCount).getNewAvailable().length; i++) {
+                        availableTableModel.setValueAt(steps.get(stepsCount).getNewAvailable()[i], 0, i);
+                    }
+
                     currentRow++;
                     stepsCount++;
                     if ((currentRow) == banker.getProcesses().size()) {
@@ -269,7 +281,7 @@ public class OutputPanel extends Panel{
         if (timer3 != null && timer3.isRunning()) {
             timer3.stop();
         }
-        timer3 = new Timer(2000, new ActionListener() {
+        timer3 = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentRow < banker.getProcesses().size() && stepsCount < banker.getRequestSequenceSteps().size()) {
@@ -310,6 +322,8 @@ public class OutputPanel extends Panel{
 
     private void highlightRows(int currentRow) {
         needTable.clearSelection();
+        allocationTable.clearSelection();
+        availableTable.clearSelection();
         needTable.addRowSelectionInterval(currentRow, currentRow);
     }
 

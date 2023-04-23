@@ -36,16 +36,16 @@ public class Step {
         return text;
     }
 
-    public Process getProcess() {
-        return process;
-    }
-
     public String getSafeSequence() {
         String[] ss = new String[safeSequence.size()];
         for (int i = 0; i < safeSequence.size(); i++) {
             ss[i] = ("P" + safeSequence.get(i));
         }
         return Utility.arrayToString(ss);
+    }
+
+    public int[] getNewAvailable() {
+        return this.newAvailable;
     }
 
     public void setNewAvailable(int[] newAvailable) {

@@ -103,10 +103,11 @@ public class BankersAlgorithm {
                     }
                     finishString = finishString.substring(0, finishString.length() - 1) + " ]";
                     processText.append(finishString);
-                    safeSequenceSteps.add(new Step(i, processText.toString(), process, false, currentSafeSequence));
+                    Step step = new Step(i, processText.toString(), process, true, currentSafeSequence);
+                    safeSequenceSteps.add(step);
+                    step.setNewAvailable(Arrays.copyOf(work, numberOfResources));
                     processText.setLength(0);
                 }
-
             }
             if (!flag) {
                 break;
@@ -133,7 +134,9 @@ public class BankersAlgorithm {
         for (int i = 0; i < processes.size(); i++) {
             int[] need = processes.get(i).getNeed();
             boolean needSatisfied = Arrays.compare(requestResource, need) <= 0;
-            processText.append("Request ≤ Need : " + needSatisfied);
+            processText.append("For Process "+ i+" Request ≤ Need : " + needSatisfied);
+            requestSequenceSteps.add(new Step(i, processText.toString(), process));
+            processText.setLength(0);
             if (needSatisfied) {
                 matchingProcessIndex = i;
                 process = processes.get(i);
@@ -143,14 +146,17 @@ public class BankersAlgorithm {
         }
         if (process == null) {
             // Request cannot be granted.
+            requestSequenceSteps.add(new Step(-1, "Request can't be granted", process));
             return false;
         }
 
-        processText.append(", Request ≤ Work :");
+        processText.setLength(0);
+        processText.append("Request ≤ Work :");
         for (int i = 0; i < availableResources.length; i++) {
             if (requestResource[i] > availableResources[i]) {
                 processText.append("<br>" + Arrays.toString(requestResource) + " ≤ " + Arrays.toString(availableResources) + " is false.<br>Request can't be granted.");
                 requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process));
+                processText.setLength(0);
                 return false; // Request cannot be granted.
             }
         }
