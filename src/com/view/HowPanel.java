@@ -6,7 +6,8 @@ import view.component.Panel;
 
 public class HowPanel extends Panel{
 
-    private ImageButton musicOnButton, musicOffButton, homeButton, defButton, termsButton, choicesButton, backButton, formatButton;
+    private ImageButton musicOnButton, musicOffButton, homeButton, defButton, termsButton,
+            choicesButton, backButton, formatButton, inputButton, outputButton;
     public HowPanel() {
 
         super("bg/how-1.png");
@@ -19,6 +20,8 @@ public class HowPanel extends Panel{
         choicesButton = new ImageButton("buttons/choices.png");
         formatButton = new ImageButton("buttons/format.png");
         backButton = new ImageButton("buttons/back.png");
+        inputButton = new ImageButton("buttons/input.png");
+        outputButton = new ImageButton("buttons/output.png");
 
         musicOnButton.setBounds(976, 25, 47, 47);
         musicOffButton.setBounds(976, 25, 47, 47);
@@ -27,6 +30,8 @@ public class HowPanel extends Panel{
         termsButton.setBounds(525, 180, 156, 47);
         formatButton.setBounds(912, 385, 121, 40);
         backButton.setBounds(59, 720, 47, 47);
+        inputButton.setBounds(242,118, 216, 47);
+        outputButton.setBounds(465,118, 216, 47);
 
         musicOffButton.setVisible(false);
         backButton.setVisible(false);
@@ -43,6 +48,8 @@ public class HowPanel extends Panel{
         this.add(formatButton);
         this.add(backButton);
         this.add(choicesButton);
+        this.add(inputButton);
+        this.add(outputButton);
     }
 
     private void setListeners() {
@@ -54,6 +61,8 @@ public class HowPanel extends Panel{
         formatButton.hover("buttons/format-hover.png", "buttons/format.png");
         backButton.hover("buttons/back-hover.png", "buttons/back.png");
         choicesButton.hover("buttons/choices-hover.png", "buttons/choices.png");
+        inputButton.hover("buttons/input-hover.png", "buttons/input.png");
+        outputButton.hover("buttons/output-hover.png", "buttons/output.png");
         listenToButtonClicks();
     }
 
@@ -67,6 +76,10 @@ public class HowPanel extends Panel{
             choicesButton.setBounds(222, 179, 156, 47);
             defButton.setVisible(false);
             formatButton.setVisible(false);
+            inputButton.setVisible(true);
+            outputButton.setVisible(true);
+            inputButton.setBounds(242,118, 216, 47);
+            outputButton.setBounds(465,118, 216, 47);
         });
         termsButton.addActionListener(e -> {
             setImage("bg/how-2.png");
@@ -77,6 +90,10 @@ public class HowPanel extends Panel{
             choicesButton.setBounds(525, 179, 156, 47);
             termsButton.setVisible(false);
             formatButton.setVisible(false);
+            inputButton.setVisible(true);
+            outputButton.setVisible(true);
+            inputButton.setBounds(242,118, 216, 47);
+            outputButton.setBounds(465,118, 216, 47);
         });
         formatButton.addActionListener(e -> {
             setImage("bg/how-1-1.png");
@@ -87,6 +104,10 @@ public class HowPanel extends Panel{
             backButton.setVisible(true);
             choicesButton.setVisible(false);
             formatButton.setVisible(false);
+            inputButton.setVisible(true);
+            outputButton.setVisible(true);
+            inputButton.setBounds(242,118, 216, 47);
+            outputButton.setBounds(465,118, 216, 47);
         });
         backButton.addActionListener(e -> {
             setImage("bg/how-1.png");
@@ -97,6 +118,11 @@ public class HowPanel extends Panel{
             backButton.setVisible(false);
             formatButton.setVisible(true);
             formatButton.setBounds(912, 385, 121, 40);
+            inputButton.setVisible(true);
+            outputButton.setVisible(true);
+            choicesButton.setVisible(false);
+            inputButton.setBounds(242,118, 216, 47);
+            outputButton.setBounds(465,118, 216, 47);
         });
         choicesButton.addActionListener(e -> {
             setImage("bg/how-1.png");
@@ -107,6 +133,38 @@ public class HowPanel extends Panel{
             backButton.setVisible(false);
             formatButton.setVisible(true);
             formatButton.setBounds(912, 385, 121, 40);
+            inputButton.setVisible(true);
+            outputButton.setVisible(true);
+            choicesButton.setVisible(false);
+            inputButton.setBounds(242,118, 216, 47);
+            outputButton.setBounds(465,118, 216, 47);
+        });
+        inputButton.addActionListener(e -> {
+            setImage("bg/how-4.png");
+            defButton.setVisible(true);
+            termsButton.setVisible(true);
+            defButton.setBounds(55, 180, 455, 47);
+            termsButton.setBounds(525, 180, 156, 47);
+            backButton.setVisible(false);
+            formatButton.setVisible(false);
+            outputButton.setVisible(true);
+            choicesButton.setVisible(true);
+            choicesButton.setBounds(300, 118,156, 47);
+            inputButton.setVisible(false);
+        });
+        outputButton.addActionListener(e -> {
+            setImage("bg/how-5.png");
+            defButton.setVisible(true);
+            termsButton.setVisible(true);
+            defButton.setBounds(55, 180, 455, 47);
+            termsButton.setBounds(525, 180, 156, 47);
+            backButton.setVisible(false);
+            formatButton.setVisible(false);
+            inputButton.setVisible(true);
+            inputButton.setBounds(465,118, 216, 47);
+            choicesButton.setVisible(true);
+            choicesButton.setBounds(300, 118,156, 47);
+            outputButton.setVisible(false);
         });
     }
 
