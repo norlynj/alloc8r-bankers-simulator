@@ -370,6 +370,7 @@ public class OutputPanel extends Panel{
         needTableModel.reset();
         availableTableModel.reset();
         safeSequenceLabel.setText("");
+        stepsLabel.setText("");
         requestResourceLabel.setText("");
         safetyAlgoButton.setEnabled(true);
         resourceRequestButton.setEnabled(true);
@@ -392,5 +393,16 @@ public class OutputPanel extends Panel{
         return homeButton;
     }
 
+    public Timer getTimer1() {
+        return timer1;
+    }
+
+    public Timer getTimer2() {
+        return timer2;
+    }
+
+    public Timer getTimer3() {
+        return timer3;
+    }
 }
 

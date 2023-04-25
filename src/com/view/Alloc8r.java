@@ -96,13 +96,26 @@ public class Alloc8r {
             cardLayout.show(contentPane, "menuPanel");
             inputPanel.resetTables();
             outputPanel.resetTables();
+            if (outputPanel.getTimer1() != null) {
+                outputPanel.getTimer1().stop();
+            }
+            if (outputPanel.getTimer2() != null) {
+                outputPanel.getTimer2().stop();
+            }
+            if (outputPanel.getTimer3() != null) {
+                outputPanel.getTimer3().stop();
+            }
         });
     }
 
     public void listenToInput(){
         inputPanel.getMusicOnButton().addActionListener(e -> soundClick());
         inputPanel.getMusicOffButton().addActionListener(e -> soundClick());
-        inputPanel.getHomeButton().addActionListener(e -> cardLayout.show(contentPane, "menuPanel" ));
+        inputPanel.getHomeButton().addActionListener(e -> {
+            inputPanel.resetTables();
+
+            cardLayout.show(contentPane, "menuPanel" );
+        });
         inputPanel.getRunButton().addActionListener(e -> {
             outputPanel.setBankers(inputPanel.getBankers());
             outputPanel.populateTable();
