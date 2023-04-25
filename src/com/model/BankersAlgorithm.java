@@ -75,11 +75,14 @@ public class BankersAlgorithm {
 
                 if (!visited[i]) {
                     processText.append("For Process " + i);
+                    System.out.println("For Process " + i);
+
                     int j;
                     ArrayList<Integer> currentSafeSequence = new ArrayList<>();
                     for (j = 0; j < numberOfResources; j++) {
                         if (process.getNeed()[j] > work[j]) {
                             processText.append("     <br>Finish["+i+"] is false and Need > Work so P"+i + " must wait.");
+                            System.out.println("     \nFinish["+i+"] is false and Need > Work so P"+i + " must wait.");
                             break;
                         }
                     }
@@ -90,11 +93,13 @@ public class BankersAlgorithm {
                         flag = true;
                         currentSafeSequence.add(i);
                         processText.append("     <br>Finish["+i+"] is true and Need <= Work so P"+i + " must be kept in the safe sequence.<br>     Work = Work + Allocation =  ");
+                        System.out.println("     \nFinish["+i+"] is true and Need <= Work so P"+i + " must be kept in the safe sequence.\n     Work = Work + Allocation =  ");
 
                         for (j = 0; j < numberOfResources; j++) {
                             work[j] += process.getAllocation()[j];
                         }
                         processText.append(Arrays.toString(work));
+                        System.out.println(Arrays.toString(work));
                     }
                     // Create a string representation of the Finish array
                     String finishString = "<br>     Finish = [";
@@ -103,6 +108,7 @@ public class BankersAlgorithm {
                     }
                     finishString = finishString.substring(0, finishString.length() - 1) + " ]";
                     processText.append(finishString);
+                    System.out.println(finishString);
                     Step step = new Step(i, processText.toString(), process, true, currentSafeSequence);
                     safeSequenceSteps.add(step);
                     step.setNewAvailable(Arrays.copyOf(work, numberOfResources));
@@ -135,6 +141,7 @@ public class BankersAlgorithm {
             int[] need = processes.get(i).getNeed();
             boolean needSatisfied = Arrays.compare(requestResource, need) <= 0;
             processText.append("For Process "+ i+" Request ≤ Need : " + needSatisfied);
+            System.out.println("For Process "+ i+" Request ≤ Need : " + needSatisfied);
             requestSequenceSteps.add(new Step(i, processText.toString(), process));
             processText.setLength(0);
             if (needSatisfied) {
@@ -152,16 +159,18 @@ public class BankersAlgorithm {
 
         processText.setLength(0);
         processText.append("Request ≤ Work :");
+        System.out.println("Request ≤ Work :");
         for (int i = 0; i < availableResources.length; i++) {
             if (requestResource[i] > availableResources[i]) {
                 processText.append("<br>" + Arrays.toString(requestResource) + " ≤ " + Arrays.toString(availableResources) + " is false.<br>Request can't be granted.");
+                System.out.println("\n" + Arrays.toString(requestResource) + " ≤ " + Arrays.toString(availableResources) + " is false.\nRequest can't be granted.");
                 requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process));
                 processText.setLength(0);
                 return false; // Request cannot be granted.
             }
         }
         processText.append("<br>" + Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is true. \nWe grant the request.");
-
+        System.out.println("\n" + Arrays.toString(requestResource) + " <= " + Arrays.toString(availableResources) + " is true. \nWe grant the request.");
 
         // Grant the request.
         int[] available = new int[availableResources.length];
@@ -174,9 +183,17 @@ public class BankersAlgorithm {
         }
 
         processText.append("<br>Modify the state");
+        System.out.println("\nModify the state");
+
         processText.append("<br>available  = ").append(Arrays.toString(availableResources)).append(" - ").append(Arrays.toString(requestResource)).append(" = ").append(Arrays.toString(available));
+        System.out.println("\navailable  = " + Arrays.toString(availableResources) + " - " + Arrays.toString(requestResource) + " = " + Arrays.toString(available));
+
         processText.append("<br>allocation = ").append(Arrays.toString(nextProcess.getAllocation())).append(" + ").append(Arrays.toString(requestResource)).append(" = ").append(Arrays.toString(alloc));
+        System.out.println("\nallocation = " + Arrays.toString(nextProcess.getAllocation()) + " + " + Arrays.toString(requestResource) + " = " + Arrays.toString(alloc));
+
         processText.append("<br>need = ").append(Arrays.toString(nextProcess.getNeed())).append(" + ").append(Arrays.toString(requestResource)).append(" = ").append(Arrays.toString(need));
+        System.out.println("\nneed = " + Arrays.toString(nextProcess.getNeed()) + " + " + Arrays.toString(requestResource) + " = " + Arrays.toString(need));
+
 
         Step s = new Step(matchingProcessIndex, processText.toString(), process);
         requestSequenceSteps.add(new Step(matchingProcessIndex, processText.toString(), process, true));
