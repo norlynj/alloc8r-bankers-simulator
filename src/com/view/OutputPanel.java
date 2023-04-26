@@ -240,6 +240,7 @@ public class OutputPanel extends Panel{
                     stepDescriptionLabel.setText("Step 2: Determining the safe sequence");
                     stepsLabel.setText(steps.get(stepsCount).getText());
                     safeSequenceLabel.setText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
+                    safeSequenceLabel.setToolTipText(safeSequenceLabel.getText() + " " + steps.get(stepsCount).getSafeSequence());
 
                     // Update the new available
                     for (int i = 0; i < steps.get(stepsCount).getNewAvailable().length; i++) {
@@ -262,6 +263,7 @@ public class OutputPanel extends Panel{
                         resourceRequestButton.setEnabled(false);
                     } else {
                         safeSequenceLabel.setText(Utility.arrayToString(banker.getSafeSequence()));
+                        safeSequenceLabel.setToolTipText(Utility.arrayToString(banker.getSafeSequence()));
                     }
                 }
             }
@@ -339,6 +341,7 @@ public class OutputPanel extends Panel{
             }
         }
         requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
+        requestResourceLabel.setToolTipText(Utility.arrayToString(banker.getRequestResource()));
     }
 
     private void simulateProcess(int currentRow) {
@@ -352,6 +355,7 @@ public class OutputPanel extends Panel{
             availableTableModel.setValueAt(banker.getAvailableResources()[j], 0, j);
         }
         requestResourceLabel.setText(Utility.arrayToString(banker.getRequestResource()));
+        requestResourceLabel.setToolTipText(Utility.arrayToString(banker.getRequestResource()));
     }
 
     public void musicClick() {
@@ -370,8 +374,10 @@ public class OutputPanel extends Panel{
         needTableModel.reset();
         availableTableModel.reset();
         safeSequenceLabel.setText("");
+        safeSequenceLabel.setToolTipText("");
         stepsLabel.setText("");
         requestResourceLabel.setText("");
+        requestResourceLabel.setToolTipText("");
         safetyAlgoButton.setEnabled(true);
         resourceRequestButton.setEnabled(true);
     }
